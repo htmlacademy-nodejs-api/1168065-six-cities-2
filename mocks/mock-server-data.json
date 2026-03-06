@@ -1,0 +1,95 @@
+{
+  "api": {
+    "cities": [
+      "Paris",
+      "Cologne",
+      "Brussels",
+      "Amsterdam",
+      "Hamburg",
+      "Dusseldorf"
+    ],
+    "housingTypes": [
+      "apartment",
+      "house",
+      "room",
+      "hotel"
+    ],
+    "facilities": [
+      "Breakfast",
+      "Air conditioning",
+      "Laptop friendly workspace",
+      "Baby seat",
+      "Washer",
+      "Towels",
+      "Fridge"
+    ],
+    "titles": [
+      "Modern apartment in city center",
+      "Cozy studio near metro station",
+      "Spacious house with private garden",
+      "Luxury hotel room with river view",
+      "Bright apartment with balcony",
+      "Quiet room in residential district",
+      "Stylish loft near main attractions",
+      "Comfortable house for family stay",
+      "Elegant apartment with modern design",
+      "Charming room close to downtown"
+    ],
+    "descriptions": [
+      "Beautiful and fully furnished place located in the heart of the city, perfect for travelers who want comfort and convenience.",
+      "Modern interior, fast Wi-Fi, and easy access to public transport make this property ideal for short and long stays.",
+      "Enjoy peaceful surroundings and high-quality amenities in this carefully designed and comfortable accommodation.",
+      "Perfect location for exploring the city, with shops, restaurants, and attractions within walking distance.",
+      "Bright and spacious living area with everything you need for a pleasant and relaxing stay.",
+      "Ideal choice for business trips or vacations, offering comfort, privacy, and excellent facilities.",
+      "Recently renovated property with modern furniture and all essential amenities included.",
+      "A perfect combination of style, comfort, and convenience for any type of traveler."
+    ],
+    "previewImages": [
+      "preview-1.jpg",
+      "preview-2.jpg",
+      "preview-3.jpg",
+      "preview-4.jpg",
+      "preview-5.jpg",
+      "preview-6.jpg"
+    ],
+    "offerImages": [
+      "offer-1.jpg",
+      "offer-2.jpg",
+      "offer-3.jpg",
+      "offer-4.jpg",
+      "offer-5.jpg",
+      "offer-6.jpg",
+      "offer-7.jpg",
+      "offer-8.jpg",
+      "offer-9.jpg",
+      "offer-10.jpg",
+      "offer-11.jpg",
+      "offer-12.jpg"
+    ],
+    "avatars": [
+      "avatar-1.jpg",
+      "avatar-2.png",
+      "avatar-3.jpg",
+      "avatar-4.png",
+      "avatar-5.jpg",
+      "avatar-6.png"
+    ],
+    "users": [
+      "John Smith",
+      "Emma Johnson",
+      "Michael Brown",
+      "Sophia Wilson",
+      "Daniel Miller",
+      "Olivia Davis"
+    ],
+    "emails": [
+      "john.smith@example.com",
+      "emma.johnson@example.com",
+      "michael.brown@example.com",
+      "sophia.wilson@example.com",
+      "daniel.miller@example.com",
+      "olivia.davis@example.com"
+    ]
+  }
+}
