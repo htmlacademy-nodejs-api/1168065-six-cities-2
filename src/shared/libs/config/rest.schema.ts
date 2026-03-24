@@ -3,6 +3,20 @@ import validator from 'convict-format-with-validator';
 
 convict.addFormats(validator);
 
+// Кастомный формат для IP или localhost
+convict.addFormat({
+  name: 'ip-or-localhost',
+  validate: (val: string) => {
+    // проверка IPv4 + localhost
+    const ipv4Regex =
+      /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/;
+    if (val !== 'localhost' && !ipv4Regex.test(val)) {
+      throw new Error('DB_HOST must be a valid IPv4 address or "localhost"');
+    }
+  },
+  coerce: (val: string) => val,
+});
+
 export type RestSchema = {
   PORT: number;
   SALT: string;
@@ -28,7 +42,7 @@ export const configRestSchema = convict<RestSchema>({
   },
   DB_HOST: {
     doc: 'IP address of the database server (MongoDB)',
-    format: 'ipaddress',
+    format: 'ip-or-localhost',
     env: 'DB_HOST',
     default: '127.0.0.1',
   },
