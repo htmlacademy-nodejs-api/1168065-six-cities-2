@@ -12,7 +12,6 @@ import {
   FacilityValues,
   Housing,
   HousingValues,
-  Offer,
 } from '../../types/index.js';
 import { UserEntity } from '../user/index.js';
 
@@ -77,10 +76,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
 
   @prop({
     required: true,
-    type: () => ({
-      latitude: Number,
-      longitude: Number,
-    }),
+    type: Coordinates,
   })
   public location!: Coordinates;
 }
