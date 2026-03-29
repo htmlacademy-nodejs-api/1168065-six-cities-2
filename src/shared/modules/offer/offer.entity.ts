@@ -26,7 +26,7 @@ export interface OfferEntity extends defaultClasses.Base {}
   },
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
+export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({ trim: true, required: true, minlength: 10, maxlength: 100 })
   public title!: string;
 
@@ -49,10 +49,10 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
   public isPremium!: boolean;
 
   @prop({ required: true })
-  public isFavorite: boolean;
+  public isFavorite!: boolean;
 
   @prop({ required: true, min: 0, max: 5 })
-  public rating: number;
+  public rating!: number;
 
   @prop({ required: true, type: () => String, enum: HousingValues })
   public type!: Housing;
@@ -70,8 +70,8 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
   public facilities!: Facility[];
 
   @prop({
-    required: true,
     ref: UserEntity,
+    required: true,
   })
   public userId!: Ref<UserEntity>;
 
