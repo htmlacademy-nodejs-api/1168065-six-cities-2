@@ -1,4 +1,10 @@
-import { City, Offer, parseFacility, parseHousing } from '../types/index.js';
+import {
+  City,
+  Offer,
+  parseFacility,
+  parseHousing,
+  UserType,
+} from '../types/index.js';
 import { booleanFromString } from './types-helpers.js';
 
 export function createOffer(offerData: string): Offer {
@@ -17,8 +23,11 @@ export function createOffer(offerData: string): Offer {
     guests,
     price,
     facilities,
-    name,
+    firstname,
+    lastname,
     email,
+    avatarPath,
+    userType,
     location,
   ] = offerData.replace('\n', '').split('\t');
 
@@ -40,8 +49,11 @@ export function createOffer(offerData: string): Offer {
       .split(';')
       .map((facility) => parseFacility(facility)),
     host: {
-      name,
+      firstname,
+      lastname,
       email,
+      avatarPath,
+      type: userType as UserType,
     },
     location: (() => {
       const [latitude, longitude] = location.split(';');

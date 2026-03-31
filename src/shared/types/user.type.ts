@@ -1,6 +1,9 @@
+import { UserType } from './user-type.type.js';
+
 export type User = {
-  name: string;
+  firstname: string;
+  lastname: string;
   email: string;
-  // avatarPath?: string;
-  // isPro: boolean;
+  avatarPath: string;
+  type: UserType;
 };
