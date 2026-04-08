@@ -8,7 +8,8 @@ import {
 import { OfferEntity } from '../offer/index.js';
 import { UserEntity } from '../user/index.js';
 
-export interface CommentEnity extends defaultClasses.Base {}
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export interface CommentEntity extends defaultClasses.Base {}
 
 @modelOptions({
   schemaOptions: {
@@ -16,6 +17,7 @@ export interface CommentEnity extends defaultClasses.Base {}
     timestamps: true,
   },
 })
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class CommentEntity extends defaultClasses.TimeStamps {
   @prop({ trim: true, required: true })
   public text: string;
