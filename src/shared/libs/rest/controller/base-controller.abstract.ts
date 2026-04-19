@@ -3,9 +3,11 @@ import { Controller } from './controller.interface.js';
 import { Logger } from '../../logger/index.js';
 import { Route } from '../types/route.interface.js';
 import { StatusCodes } from 'http-status-codes';
+import { injectable } from 'inversify';
 
 const DEFAULT_CONTENT_TYPE = 'application/json';
 
+@injectable()
 export abstract class BaseController implements Controller {
   private readonly _router: Router;
 
