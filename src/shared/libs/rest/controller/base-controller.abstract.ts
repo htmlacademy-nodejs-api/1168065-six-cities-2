@@ -1,9 +1,10 @@
 import { Response, Router } from 'express';
+import { injectable } from 'inversify';
+import asyncHandler from 'express-async-handler';
 import { Controller } from './controller.interface.js';
 import { Logger } from '../../logger/index.js';
 import { Route } from '../types/route.interface.js';
 import { StatusCodes } from 'http-status-codes';
-import { injectable } from 'inversify';
 
 const DEFAULT_CONTENT_TYPE = 'application/json';
 
@@ -20,7 +21,8 @@ export abstract class BaseController implements Controller {
   }
 
   public addRoute(route: Route): void {
-    this._router[route.method](route.path, route.handler.bind(this));
+    const wrapperAsyncHandler = asyncHandler(route.handler.bind(this));
+    this._router[route.method](route.path, wrapperAsyncHandler);
     this.logger.info(
       `Route registered: ${route.method.toUpperCase()} ${route.path}`,
     );
