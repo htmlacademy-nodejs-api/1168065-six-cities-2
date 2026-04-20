@@ -7,6 +7,7 @@ import { DatabaseClient } from '../shared/libs/database-client/index.js';
 import { getMongoURI } from '../shared/helpers/index.js';
 import { ExceptionFilter } from '../shared/libs/rest/index.js';
 import { UserController } from '../shared/modules/user/index.js';
+import { OfferController } from '../shared/modules/offer/index.js';
 
 @injectable()
 export class RestApplication {
@@ -21,6 +22,8 @@ export class RestApplication {
     private readonly appExceptionFilter: ExceptionFilter,
     @inject(Component.UserController)
     private readonly userController: UserController,
+    @inject(Component.OfferController)
+    private readonly offerController: OfferController,
   ) {
     this.server = express();
   }
@@ -44,6 +47,7 @@ export class RestApplication {
 
   private async _initControllers() {
     this.server.use('/users', this.userController.router);
+    this.server.use('/offers', this.offerController.router);
   }
 
   private async _initMiddleware() {
