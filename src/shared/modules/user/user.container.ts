@@ -10,7 +10,7 @@ import { UserController } from './user.controller.js';
 export function createUserContainer() {
   const userContainer = new Container();
   userContainer
-    .bind<UserService>(Component.UserServise)
+    .bind<UserService>(Component.UserService)
     .to(DefaultUserService)
     .inSingletonScope();
   userContainer
