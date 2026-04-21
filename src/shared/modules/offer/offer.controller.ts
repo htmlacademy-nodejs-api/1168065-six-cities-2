@@ -40,6 +40,11 @@ export class OfferController extends BaseController {
       method: HttpMethod.Post,
       handler: this.create,
     });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Delete,
+      handler: this.delete,
+    });
   }
 
   public async show(
@@ -48,7 +53,7 @@ export class OfferController extends BaseController {
   ): Promise<void> {
     const { offerId } = params;
 
-    // TOFO: разобраться с юнион типом ParamOfferId
+    // TODO: разобраться с юнион типом ParamOfferId
     if (Array.isArray(offerId)) {
       throw new HttpError(
         StatusCodes.BAD_REQUEST,
@@ -82,5 +87,33 @@ export class OfferController extends BaseController {
   public async index(_req: Request, res: Response): Promise<void> {
     const offers = await this.offerService.find(DEFAULT_OFFER_COUNT);
     this.ok(res, fillDTO(OfferRdo, offers));
+  }
+
+  public async delete(
+    { params }: Request<ParamOfferId>,
+    res: Response,
+  ): Promise<void> {
+    const { offerId } = params;
+
+    // TODO: разобраться с юнион типом ParamOfferId
+    if (Array.isArray(offerId)) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'Invalid offerId format',
+        'OfferController',
+      );
+    }
+
+    const offer = await this.offerService.deleteById(offerId);
+
+    if (!offer) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Offer with id ${offerId} not found.`,
+        'OfferController',
+      );
+    }
+
+    this.noContent(res, offer);
   }
 }

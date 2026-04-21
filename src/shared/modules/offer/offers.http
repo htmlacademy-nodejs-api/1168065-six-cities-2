@@ -7,3 +7,9 @@ GET http://localhost:3000/offers/62711a50b0e24a624d49ffdc HTTP/1.1
 GET http://localhost:3000/offers HTTP/1.1
 
 ###
+
+## Удалить объявление по идентификатору
+
+DELETE http://localhost:3000/offers/62825028a75295825778ac80 HTTP/1.1
+
+###
