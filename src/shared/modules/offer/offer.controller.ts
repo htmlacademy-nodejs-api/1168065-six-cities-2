@@ -10,6 +10,8 @@ import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { OfferService } from './offer-service.interface.js';
 import { ParamOfferId } from './types/param-offerid.type.js';
+import { fillDTO } from '../../helpers/index.js';
+import { OfferRdo } from './rdo/offer.rdo.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -53,6 +55,6 @@ export class OfferController extends BaseController {
       );
     }
 
-    this.ok(res, offer);
+    this.ok(res, fillDTO(OfferRdo, offer));
   }
 }
