@@ -14,6 +14,7 @@ import { fillDTO } from '../../helpers/index.js';
 import { OfferRdo } from './rdo/offer.rdo.js';
 import { DEFAULT_OFFER_COUNT } from './offer.constants.js';
 import { CreateOfferRequest } from './types/create-offer-request.type.js';
+import { UpdateOfferDTO } from './dto/update-offer.dto.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -44,6 +45,11 @@ export class OfferController extends BaseController {
       path: '/:offerId',
       method: HttpMethod.Delete,
       handler: this.delete,
+    });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Patch,
+      handler: this.update,
     });
   }
 
@@ -115,5 +121,33 @@ export class OfferController extends BaseController {
     }
 
     this.noContent(res, offer);
+  }
+
+  public async update(
+    { body, params }: Request<ParamOfferId, unknown, UpdateOfferDTO>,
+    res: Response,
+  ): Promise<void> {
+    const { offerId } = params;
+
+    // TODO: разобраться с юнион типом ParamOfferId
+    if (Array.isArray(offerId)) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'Invalid offerId format',
+        'OfferController',
+      );
+    }
+
+    const updatedOffer = await this.offerService.updateById(offerId, body);
+
+    if (!updatedOffer) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Offer with id ${params.offerId} not found.`,
+        'OfferController',
+      );
+    }
+
+    this.ok(res, fillDTO(OfferRdo, updatedOffer));
   }
 }
