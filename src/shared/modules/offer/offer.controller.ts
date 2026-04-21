@@ -12,6 +12,7 @@ import { OfferService } from './offer-service.interface.js';
 import { ParamOfferId } from './types/param-offerid.type.js';
 import { fillDTO } from '../../helpers/index.js';
 import { OfferRdo } from './rdo/offer.rdo.js';
+import { DEFAULT_OFFER_COUNT } from './offer.constants.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -27,6 +28,11 @@ export class OfferController extends BaseController {
       path: '/:offerId',
       method: HttpMethod.Get,
       handler: this.show,
+    });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Get,
+      handler: this.index,
     });
   }
 
@@ -56,5 +62,10 @@ export class OfferController extends BaseController {
     }
 
     this.ok(res, fillDTO(OfferRdo, offer));
+  }
+
+  public async index(_req: Request, res: Response): Promise<void> {
+    const offers = await this.offerService.find(DEFAULT_OFFER_COUNT);
+    this.ok(res, fillDTO(OfferRdo, offers));
   }
 }
