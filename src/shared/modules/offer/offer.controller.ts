@@ -5,6 +5,7 @@ import {
   BaseController,
   HttpError,
   HttpMethod,
+  RequestQuery,
 } from '../../libs/rest/index.js';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
@@ -15,6 +16,7 @@ import { OfferRdo } from './rdo/offer.rdo.js';
 import { DEFAULT_OFFER_COUNT } from './offer.constants.js';
 import { CreateOfferRequest } from './types/create-offer-request.type.js';
 import { UpdateOfferDTO } from './dto/update-offer.dto.js';
+import { ParamsDictionary } from 'express-serve-static-core';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -90,8 +92,11 @@ export class OfferController extends BaseController {
     this.created(res, fillDTO(OfferRdo, offer));
   }
 
-  public async index(_req: Request, res: Response): Promise<void> {
-    const offers = await this.offerService.find(DEFAULT_OFFER_COUNT);
+  public async index(
+    { query }: Request<ParamsDictionary, unknown, unknown, RequestQuery>,
+    res: Response,
+  ): Promise<void> {
+    const offers = await this.offerService.find(query?.limit);
     this.ok(res, fillDTO(OfferRdo, offers));
   }
 
