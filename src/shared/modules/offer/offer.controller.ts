@@ -16,13 +16,16 @@ import { OfferRdo } from './rdo/offer.rdo.js';
 import { CreateOfferRequest } from './types/create-offer-request.type.js';
 import { UpdateOfferDTO } from './dto/update-offer.dto.js';
 import { ParamsDictionary } from 'express-serve-static-core';
+import { CommentRdo, CommentService } from '../comment/index.js';
 
 @injectable()
 export class OfferController extends BaseController {
   constructor(
     @inject(Component.Logger) protected readonly logger: Logger,
     @inject(Component.OfferService)
-    protected readonly offerService: OfferService,
+    private readonly offerService: OfferService,
+    @inject(Component.CommentService)
+    private readonly commentService: CommentService,
   ) {
     super(logger);
 
@@ -51,6 +54,11 @@ export class OfferController extends BaseController {
       path: '/:offerId',
       method: HttpMethod.Patch,
       handler: this.update,
+    });
+    this.addRoute({
+      path: '/:offerId/comments',
+      method: HttpMethod.Get,
+      handler: this.getComments,
     });
   }
 
@@ -124,6 +132,7 @@ export class OfferController extends BaseController {
       );
     }
 
+    await this.commentService.deleteByOfferId(offerId);
     this.noContent(res, offer);
   }
 
@@ -153,5 +162,34 @@ export class OfferController extends BaseController {
     }
 
     this.ok(res, fillDTO(OfferRdo, updatedOffer));
+  }
+
+  public async getComments(
+    { params }: Request<ParamOfferId>,
+    res: Response,
+  ): Promise<void> {
+    const { offerId } = params;
+
+    // TODO: разобраться с юнион типом ParamOfferId
+    if (Array.isArray(offerId)) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'Invalid offerId format',
+        'OfferController',
+      );
+    }
+
+    const offerExists = await this.offerService.exists(offerId);
+
+    if (!offerExists) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Offer with id ${params.offerId} not found.`,
+        'OfferController',
+      );
+    }
+
+    const comments = await this.commentService.findByOfferId(offerId);
+    this.ok(res, fillDTO(CommentRdo, comments));
   }
 }

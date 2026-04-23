@@ -13,3 +13,9 @@ GET http://localhost:3000/offers?limit=10 HTTP/1.1
 DELETE http://localhost:3000/offers/62825028a75295825778ac80 HTTP/1.1
 
 ###
+
+
+## Список комментариев к объявлению
+GET http://localhost:3000/offers/628a27d729c45f2bf9f6806a/comments HTTP/1.1
+
+###
