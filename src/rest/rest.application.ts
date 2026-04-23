@@ -5,9 +5,7 @@ import { Config, RestSchema } from '../shared/libs/config/index.js';
 import { Component } from '../shared/types/index.js';
 import { DatabaseClient } from '../shared/libs/database-client/index.js';
 import { getMongoURI } from '../shared/helpers/index.js';
-import { ExceptionFilter } from '../shared/libs/rest/index.js';
-import { UserController } from '../shared/modules/user/index.js';
-import { OfferController } from '../shared/modules/offer/index.js';
+import { Controller, ExceptionFilter } from '../shared/libs/rest/index.js';
 
 @injectable()
 export class RestApplication {
@@ -21,9 +19,11 @@ export class RestApplication {
     @inject(Component.ExceptionFilter)
     private readonly appExceptionFilter: ExceptionFilter,
     @inject(Component.UserController)
-    private readonly userController: UserController,
+    private readonly userController: Controller,
     @inject(Component.OfferController)
-    private readonly offerController: OfferController,
+    private readonly offerController: Controller,
+    @inject(Component.CommentController)
+    private readonly commentController: Controller,
   ) {
     this.server = express();
   }
@@ -48,6 +48,7 @@ export class RestApplication {
   private async _initControllers() {
     this.server.use('/users', this.userController.router);
     this.server.use('/offers', this.offerController.router);
+    this.server.use('/comments', this.commentController.router);
   }
 
   private async _initMiddleware() {

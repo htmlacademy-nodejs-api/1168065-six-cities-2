@@ -13,7 +13,6 @@ import { OfferService } from './offer-service.interface.js';
 import { ParamOfferId } from './types/param-offerid.type.js';
 import { fillDTO } from '../../helpers/index.js';
 import { OfferRdo } from './rdo/offer.rdo.js';
-import { DEFAULT_OFFER_COUNT } from './offer.constants.js';
 import { CreateOfferRequest } from './types/create-offer-request.type.js';
 import { UpdateOfferDTO } from './dto/update-offer.dto.js';
 import { ParamsDictionary } from 'express-serve-static-core';
