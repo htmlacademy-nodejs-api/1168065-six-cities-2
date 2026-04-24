@@ -5,6 +5,7 @@ import {
   BaseController,
   HttpError,
   HttpMethod,
+  ValidateDtoMiddleware,
 } from '../../libs/rest/index.js';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
@@ -13,6 +14,7 @@ import { OfferService } from '../offer/index.js';
 import { CreateCommentRequest } from './types/create-comment-request.type.js';
 import { fillDTO } from '../../helpers/index.js';
 import { CommentRdo } from './rdo/comment.rdo.js';
+import { CreateCommentDTO } from './dto/create-comment.dto.js';
 
 @injectable()
 export default class CommentController extends BaseController {
@@ -29,6 +31,7 @@ export default class CommentController extends BaseController {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateCommentDTO)],
     });
   }
 
