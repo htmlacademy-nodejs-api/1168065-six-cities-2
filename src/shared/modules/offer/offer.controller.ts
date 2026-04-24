@@ -6,6 +6,7 @@ import {
   HttpError,
   HttpMethod,
   RequestQuery,
+  ValidateDtoMiddleware,
 } from '../../libs/rest/index.js';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
@@ -17,6 +18,7 @@ import { CreateOfferRequest } from './types/create-offer-request.type.js';
 import { UpdateOfferDTO } from './dto/update-offer.dto.js';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { CommentRdo, CommentService } from '../comment/index.js';
+import { CreateOfferDTO } from './dto/create-offer.dto.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -44,6 +46,7 @@ export class OfferController extends BaseController {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateOfferDTO)],
     });
     this.addRoute({
       path: '/:offerId',

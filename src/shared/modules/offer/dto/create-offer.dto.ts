@@ -6,6 +6,7 @@ import {
   IsBoolean,
   IsDateString,
   IsEnum,
+  IsIn,
   IsInt,
   IsMongoId,
   IsNumber,
@@ -78,7 +79,7 @@ export class CreateOfferDTO {
   @Max(5, { message: CreateOfferValidationMessage.rating.maxValue })
   rating: number;
 
-  @IsEnum(HousingValues, { message: CreateOfferValidationMessage.type.invalid })
+  @IsIn(HousingValues, { message: CreateOfferValidationMessage.type.invalid })
   type: Housing;
 
   @IsInt({ message: CreateOfferValidationMessage.rooms.invalidFormat })
@@ -100,7 +101,7 @@ export class CreateOfferDTO {
   @ArrayMinSize(1, {
     message: CreateOfferValidationMessage.facilities.invalidLength,
   })
-  @IsEnum(FacilityValues, {
+  @IsIn(FacilityValues, {
     each: true,
     message: CreateOfferValidationMessage.facilities.invalidValue,
   })
