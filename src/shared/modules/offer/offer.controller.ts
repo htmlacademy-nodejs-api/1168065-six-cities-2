@@ -7,6 +7,7 @@ import {
   HttpMethod,
   RequestQuery,
   ValidateDtoMiddleware,
+  ValidateObjectIdMiddleware,
 } from '../../libs/rest/index.js';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
@@ -57,6 +58,10 @@ export class OfferController extends BaseController {
       path: '/:offerId',
       method: HttpMethod.Patch,
       handler: this.update,
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new ValidateDtoMiddleware(UpdateOfferDTO),
+      ],
     });
     this.addRoute({
       path: '/:offerId/comments',
