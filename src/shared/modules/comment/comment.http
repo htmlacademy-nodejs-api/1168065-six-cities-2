@@ -6,8 +6,9 @@ Content-Type: application/json
 
 {
   "text": "Отличное расположение!",
-  "offerId": "628a27d729c45f2bf9f6806a",
-  "userId": "628a27d729c45f2bf9f67ff2"
+  "rating": 5,
+  "offerId": "69c98315edbb02aef834bfd1",
+  "userId": "69c982e424f79692fbaad886"
 }
 
 ###
