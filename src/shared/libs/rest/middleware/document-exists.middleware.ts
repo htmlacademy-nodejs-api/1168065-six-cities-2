@@ -16,7 +16,16 @@ export class DocumentExistsMiddleware implements Middleware {
     _res: Response,
     next: NextFunction,
   ): Promise<void> {
-    const documentId = params[this.paramName] as string;
+    const documentId = params[this.paramName];
+
+    if (typeof documentId !== 'string') {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        `${this.paramName} is missing or incorrect`,
+        'DocumentExistsMiddleware',
+      );
+    }
+
     const documentExists = await this.service.exists(documentId);
 
     if (!documentExists) {

@@ -12,9 +12,9 @@ export class ValidateObjectIdMiddleware implements Middleware {
     _res: Response,
     next: NextFunction,
   ): void {
-    const objectId = params[this.param] as string;
+    const objectId = params[this.param];
 
-    if (Types.ObjectId.isValid(objectId)) {
+    if (typeof objectId === 'string' && Types.ObjectId.isValid(objectId)) {
       return next();
     }
 

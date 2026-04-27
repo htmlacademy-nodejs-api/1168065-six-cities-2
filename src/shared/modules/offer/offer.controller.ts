@@ -1,10 +1,8 @@
-import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
 import {
   BaseController,
   DocumentExistsMiddleware,
-  HttpError,
   HttpMethod,
   RequestQuery,
   ValidateDtoMiddleware,
