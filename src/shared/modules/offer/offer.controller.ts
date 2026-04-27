@@ -89,18 +89,7 @@ export class OfferController extends BaseController {
     res: Response,
   ): Promise<void> {
     const { offerId } = params;
-
-    // TODO: разобраться с юнион типом ParamOfferId
-    if (Array.isArray(offerId)) {
-      throw new HttpError(
-        StatusCodes.BAD_REQUEST,
-        'Invalid offerId format',
-        'OfferController',
-      );
-    }
-
     const offer = await this.offerService.findById(offerId);
-
     this.ok(res, fillDTO(OfferRdo, offer));
   }
 
@@ -126,18 +115,7 @@ export class OfferController extends BaseController {
     res: Response,
   ): Promise<void> {
     const { offerId } = params;
-
-    // TODO: разобраться с юнион типом ParamOfferId
-    if (Array.isArray(offerId)) {
-      throw new HttpError(
-        StatusCodes.BAD_REQUEST,
-        'Invalid offerId format',
-        'OfferController',
-      );
-    }
-
     const offer = await this.offerService.deleteById(offerId);
-
     await this.commentService.deleteByOfferId(offerId);
     this.noContent(res, offer);
   }
@@ -147,18 +125,7 @@ export class OfferController extends BaseController {
     res: Response,
   ): Promise<void> {
     const { offerId } = params;
-
-    // TODO: разобраться с юнион типом ParamOfferId
-    if (Array.isArray(offerId)) {
-      throw new HttpError(
-        StatusCodes.BAD_REQUEST,
-        'Invalid offerId format',
-        'OfferController',
-      );
-    }
-
     const updatedOffer = await this.offerService.updateById(offerId, body);
-
     this.ok(res, fillDTO(OfferRdo, updatedOffer));
   }
 
@@ -167,16 +134,6 @@ export class OfferController extends BaseController {
     res: Response,
   ): Promise<void> {
     const { offerId } = params;
-
-    // TODO: разобраться с юнион типом ParamOfferId
-    if (Array.isArray(offerId)) {
-      throw new HttpError(
-        StatusCodes.BAD_REQUEST,
-        'Invalid offerId format',
-        'OfferController',
-      );
-    }
-
     const comments = await this.commentService.findByOfferId(offerId);
     this.ok(res, fillDTO(CommentRdo, comments));
   }
