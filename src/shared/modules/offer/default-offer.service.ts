@@ -109,6 +109,10 @@ export class DefaultOfferService implements OfferService {
     city: City,
     count?: number,
   ): Promise<types.DocumentType<OfferEntity>[]> {
+    if (!city) {
+      return [];
+    }
+
     return this.offerModel
       .find({ city, isPremium: true })
       .sort({ createdAt: SortType.Down })

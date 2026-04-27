@@ -1,14 +1,16 @@
+import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
 import {
   BaseController,
   DocumentExistsMiddleware,
+  HttpError,
   HttpMethod,
   RequestQuery,
   ValidateDtoMiddleware,
   ValidateObjectIdMiddleware,
 } from '../../libs/rest/index.js';
-import { Component } from '../../types/index.js';
+import { City, Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { OfferService } from './offer-service.interface.js';
 import { ParamOfferId } from './types/param-offerid.type.js';
@@ -33,6 +35,22 @@ export class OfferController extends BaseController {
 
     this.logger.info('Register routes for OfferController...');
     this.addRoute({
+      path: '/',
+      method: HttpMethod.Get,
+      handler: this.index,
+    });
+    this.addRoute({
+      path: '/premium',
+      method: HttpMethod.Get,
+      handler: this.getPremiumOffersByCity,
+    });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateOfferDTO)],
+    });
+    this.addRoute({
       path: '/:offerId',
       method: HttpMethod.Get,
       handler: this.show,
@@ -40,17 +58,6 @@ export class OfferController extends BaseController {
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ],
-    });
-    this.addRoute({
-      path: '/',
-      method: HttpMethod.Get,
-      handler: this.index,
-    });
-    this.addRoute({
-      path: '/',
-      method: HttpMethod.Post,
-      handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateOfferDTO)],
     });
     this.addRoute({
       path: '/:offerId',
@@ -134,5 +141,27 @@ export class OfferController extends BaseController {
     const { offerId } = params;
     const comments = await this.commentService.findByOfferId(offerId);
     this.ok(res, fillDTO(CommentRdo, comments));
+  }
+
+  public async getPremiumOffersByCity(
+    { query }: Request<ParamsDictionary, unknown, unknown, RequestQuery>,
+    res: Response,
+  ): Promise<void> {
+    const city = String(query.city).trim() as City;
+    const limit = query.limit && Number(query.limit);
+
+    if (!city) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'City is missing or incorrect',
+        'OfferController',
+      );
+    }
+
+    const premiumOffersByCity = await this.offerService.findPremiumByCity(
+      city,
+      limit,
+    );
+    this.ok(res, fillDTO(OfferRdo, premiumOffersByCity));
   }
 }

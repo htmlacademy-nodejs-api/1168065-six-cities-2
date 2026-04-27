@@ -73,3 +73,8 @@ Content-Type: application/json
 GET http://localhost:3000/offers/69c98315edbb02aef834bfd1/comments HTTP/1.1
 
 ###
+
+## Получить список премиальных объявлений по городу
+GET http://localhost:3000/offers/premium?city=Paris&limit=10 HTTP/1.1
+
+###
