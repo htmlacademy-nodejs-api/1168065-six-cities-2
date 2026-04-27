@@ -100,7 +100,7 @@ export class DefaultOfferService implements OfferService {
         {
           rating,
         },
-        { new: true },
+        { returnDocument: 'after' },
       )
       .exec();
   }
