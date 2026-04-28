@@ -1,6 +1,7 @@
 import { Response, Router } from 'express';
-import { injectable } from 'inversify';
+import { ParamsDictionary } from 'express-serve-static-core';
 import asyncHandler from 'express-async-handler';
+import { injectable } from 'inversify';
 import { Controller } from './controller.interface.js';
 import { Logger } from '../../logger/index.js';
 import { Route } from '../types/route.interface.js';
@@ -20,9 +21,18 @@ export abstract class BaseController implements Controller {
     return this._router;
   }
 
-  public addRoute(route: Route): void {
+  public addRoute<P extends ParamsDictionary>(route: Route<P>): void {
     const wrapperAsyncHandler = asyncHandler(route.handler.bind(this));
-    this._router[route.method](route.path, wrapperAsyncHandler);
+
+    const middlewareHandlers = route?.middlewares?.map((item) =>
+      asyncHandler(item.execute.bind(item)),
+    );
+
+    const allHandlers = middlewareHandlers
+      ? [...middlewareHandlers, wrapperAsyncHandler]
+      : wrapperAsyncHandler;
+
+    this._router[route.method](route.path, allHandlers);
     this.logger.info(
       `Route registered: ${route.method.toUpperCase()} ${route.path}`,
     );
