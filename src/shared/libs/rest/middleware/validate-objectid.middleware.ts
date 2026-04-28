@@ -14,7 +14,7 @@ export class ValidateObjectIdMiddleware implements Middleware {
   ): void {
     const objectId = params[this.param];
 
-    if (Types.ObjectId.isValid(objectId)) {
+    if (typeof objectId === 'string' && Types.ObjectId.isValid(objectId)) {
       return next();
     }
 

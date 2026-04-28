@@ -1,6 +1,7 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import { City, Coordinates, Facility, Housing } from '../../../types/index.js';
+import { City, Facility, Housing } from '../../../types/index.js';
 import { UserRdo } from '../../user/rdo/user.rdo.js';
+import { CoordinatesRdo } from './coordinates.rdo.js';
 
 export class OfferRdo {
   @Expose()
@@ -54,6 +55,6 @@ export class OfferRdo {
   public host: UserRdo;
 
   @Expose()
-  @Type(() => Coordinates)
-  public location: Coordinates;
+  @Type(() => CoordinatesRdo)
+  public location: CoordinatesRdo;
 }
