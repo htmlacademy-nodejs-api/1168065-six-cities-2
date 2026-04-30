@@ -8,7 +8,6 @@ import {
   IsEnum,
   IsIn,
   IsInt,
-  IsMongoId,
   IsNumber,
   IsUrl,
   Max,
