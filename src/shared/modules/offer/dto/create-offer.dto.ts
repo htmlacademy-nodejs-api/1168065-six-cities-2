@@ -107,7 +107,6 @@ export class CreateOfferDTO {
   })
   facilities: Facility[];
 
-  @IsMongoId({ message: CreateOfferValidationMessage.userId.invalidId })
   userId: string;
 
   @ValidateNested({ message: CreateOfferValidationMessage.location.invalid })
