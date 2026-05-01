@@ -38,7 +38,9 @@ export class DefaultOfferService implements OfferService {
     return this.offerModel.findById(offerId).populate(['userId']).exec();
   }
 
-  public async find(count: number): Promise<types.DocumentType<OfferEntity>[]> {
+  public async find(
+    count?: number,
+  ): Promise<types.DocumentType<OfferEntity>[]> {
     return this.offerModel
       .find()
       .sort({ createdAt: SortType.Down })
@@ -98,15 +100,19 @@ export class DefaultOfferService implements OfferService {
         {
           rating,
         },
-        { new: true },
+        { returnDocument: 'after' },
       )
       .exec();
   }
 
   public async findPremiumByCity(
     city: City,
-    count: number,
+    count?: number,
   ): Promise<types.DocumentType<OfferEntity>[]> {
+    if (!city) {
+      return [];
+    }
+
     return this.offerModel
       .find({ city, isPremium: true })
       .sort({ createdAt: SortType.Down })

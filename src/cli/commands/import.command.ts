@@ -23,6 +23,7 @@ import {
 import { ConsoleLogger, Logger } from '../../shared/libs/logger/index.js';
 import { Offer } from '../../shared/types/index.js';
 import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.constant.js';
+import { CommentModel } from '../../shared/modules/comment/index.js';
 
 export class ImportCommand implements Command {
   private userService: UserService;
@@ -36,7 +37,11 @@ export class ImportCommand implements Command {
     this.onCompleteImport = this.onCompleteImport.bind(this);
 
     this.logger = new ConsoleLogger();
-    this.offerService = new DefaultOfferService(this.logger, OfferModel);
+    this.offerService = new DefaultOfferService(
+      this.logger,
+      OfferModel,
+      CommentModel,
+    );
     this.userService = new DefaultUserService(this.logger, UserModel);
     this.databaseClient = new MongoDatabaseClient(this.logger);
   }

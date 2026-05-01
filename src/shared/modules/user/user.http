@@ -9,7 +9,8 @@ Content-Type: application/json
   "avatarPath": "torrance.png",
   "firstname": "Jack",
   "lastname": "Torrance",
-  "password": "shining"
+  "password": "shining",
+  "type": "base"
 }
 
 ###
