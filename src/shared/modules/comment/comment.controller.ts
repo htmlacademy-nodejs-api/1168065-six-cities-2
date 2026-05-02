@@ -49,6 +49,7 @@ export default class CommentController extends BaseController {
       userId: tokenPayload.id,
     });
     await this.offerService.incCommentCount(offerId);
+    await this.offerService.calcRating(offerId);
     this.created(res, fillDTO(CommentRdo, comment));
   }
 }

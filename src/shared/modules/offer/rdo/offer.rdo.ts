@@ -14,7 +14,9 @@ export class OfferRdo {
   public description: string;
 
   @Expose()
-  @Transform(({ value }) => value.toISOString())
+  @Transform(({ value }) =>
+    value instanceof Date ? value.toISOString() : value,
+  )
   public publishDate: string;
 
   @Expose()

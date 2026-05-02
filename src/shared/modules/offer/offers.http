@@ -28,7 +28,6 @@ Content-Type: application/json
     "https://example.com/images/brussels6.jpg"
   ],
   "isPremium": true,
-  "isFavorite": true,
   "rating": 4.7,
   "type": "apartment",
   "rooms": 2,

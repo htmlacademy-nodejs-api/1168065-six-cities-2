@@ -22,6 +22,7 @@ import { UpdateOfferDTO } from './dto/update-offer.dto.js';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { CommentRdo, CommentService } from '../comment/index.js';
 import { CreateOfferDTO } from './dto/create-offer.dto.js';
+// import { FavoriteService } from '../favorite/index.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -31,6 +32,8 @@ export class OfferController extends BaseController {
     private readonly offerService: OfferService,
     @inject(Component.CommentService)
     private readonly commentService: CommentService,
+    // @inject(Component.FavoriteService)
+    // private readonly favoriteService: FavoriteService,
   ) {
     super(logger);
 
@@ -117,10 +120,15 @@ export class OfferController extends BaseController {
   }
 
   public async index(
-    { query }: Request<ParamsDictionary, unknown, unknown, RequestQuery>,
+    {
+      query,
+      tokenPayload,
+    }: Request<ParamsDictionary, unknown, unknown, RequestQuery>,
     res: Response,
   ): Promise<void> {
-    const offers = await this.offerService.find(query?.limit);
+    const userId = tokenPayload?.id;
+    const offers = await this.offerService.find(query?.limit, userId);
+
     this.ok(res, fillDTO(OfferRdo, offers));
   }
 
