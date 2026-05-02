@@ -6,7 +6,10 @@ import { City, DocumentExists } from '../../types/index.js';
 
 export interface OfferService extends DocumentExists {
   create(dto: CreateOfferDTO): Promise<DocumentType<OfferEntity>>;
-  findById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
+  findById(
+    offerId: string,
+    userId?: string,
+  ): Promise<DocumentType<OfferEntity> | null>;
   find(count?: number): Promise<DocumentType<OfferEntity>[]>;
   deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   updateById(
@@ -17,8 +20,9 @@ export interface OfferService extends DocumentExists {
   findPremiumByCity(
     city: City,
     count?: number,
+    userId?: string,
   ): Promise<DocumentType<OfferEntity>[]>;
-  findByFavorite(): Promise<DocumentType<OfferEntity>[]>;
+  findByFavorite(userId: string): Promise<DocumentType<OfferEntity>[]>;
   calcRating(offerId: string): Promise<void>;
   exists(documentId: string): Promise<boolean>;
 }
