@@ -1,11 +1,12 @@
 # Получить объявление по идентификатору
 GET http://localhost:3000/offers/69c98315edbb02aef834bfd1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNjllZTVmMzVmNjEzMTNjMWRkZjBkODJkIiwiaWF0IjoxNzc3NTc1NjIzLCJleHAiOjE3Nzc3NDg0MjN9.CDkRYtP0vK_gcJ5CRZwEDj9FVqpQVNt0S0qoHgMPnUM
 
 ###
 
 ## Получить список объявлений
 GET http://localhost:3000/offers?limit=10 HTTP/1.1
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNjllZTVmMzVmNjEzMTNjMWRkZjBkODJkIiwiaWF0IjoxNzc3NTc1NjIzLCJleHAiOjE3Nzc3NDg0MjN9.CDkRYtP0vK_gcJ5CRZwEDj9FVqpQVNt0S0qoHgMPnUM
 ###
 
 ## Создать новое объявление
@@ -76,5 +77,26 @@ GET http://localhost:3000/offers/69c98315edbb02aef834bfd1/comments HTTP/1.1
 
 ## Получить список премиальных объявлений по городу
 GET http://localhost:3000/offers/premium?city=Paris&limit=10 HTTP/1.1
+
+###
+
+## Добавить в избранное
+
+POST http://localhost:3000/offers/69c98315edbb02aef834bfd1/favorite HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNjllZTVmMzVmNjEzMTNjMWRkZjBkODJkIiwiaWF0IjoxNzc3NTc1NjIzLCJleHAiOjE3Nzc3NDg0MjN9.CDkRYtP0vK_gcJ5CRZwEDj9FVqpQVNt0S0qoHgMPnUM
+
+###
+
+## Удалить из избранного
+
+DELETE http://localhost:3000/offers/69c98315edbb02aef834bfd1/favorite HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNjllZTVmMzVmNjEzMTNjMWRkZjBkODJkIiwiaWF0IjoxNzc3NTc1NjIzLCJleHAiOjE3Nzc3NDg0MjN9.CDkRYtP0vK_gcJ5CRZwEDj9FVqpQVNt0S0qoHgMPnUM
+
+###
+
+## Получить избранные объявления
+
+GET http://localhost:3000/offers/favorites HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNjllZTVmMzVmNjEzMTNjMWRkZjBkODJkIiwiaWF0IjoxNzc3NTc1NjIzLCJleHAiOjE3Nzc3NDg0MjN9.CDkRYtP0vK_gcJ5CRZwEDj9FVqpQVNt0S0qoHgMPnUM
 
 ###

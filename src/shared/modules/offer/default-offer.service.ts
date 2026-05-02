@@ -37,8 +37,31 @@ export class DefaultOfferService implements OfferService {
 
   public async findById(
     offerId: string,
-  ): Promise<types.DocumentType<OfferEntity> | null> {
-    return this.offerModel.findById(offerId).populate(['userId']).exec();
+    userId?: string,
+  ): Promise<OfferWithFavorite | null> {
+    const offer = await this.offerModel
+      .findById(offerId)
+      .populate(['userId'])
+      .lean()
+      .exec();
+
+    if (!offer) {
+      return null;
+    }
+
+    if (!userId) {
+      return { ...offer, isFavorite: false };
+    }
+
+    const isFavorite = await this.favoriteModel.exists({
+      userId,
+      offerId,
+    });
+
+    return {
+      ...offer,
+      isFavorite: isFavorite !== null,
+    };
   }
 
   public async find(

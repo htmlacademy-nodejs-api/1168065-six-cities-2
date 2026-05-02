@@ -22,7 +22,7 @@ import { UpdateOfferDTO } from './dto/update-offer.dto.js';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { CommentRdo, CommentService } from '../comment/index.js';
 import { CreateOfferDTO } from './dto/create-offer.dto.js';
-// import { FavoriteService } from '../favorite/index.js';
+import { FavoriteService } from '../favorite/index.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -32,8 +32,8 @@ export class OfferController extends BaseController {
     private readonly offerService: OfferService,
     @inject(Component.CommentService)
     private readonly commentService: CommentService,
-    // @inject(Component.FavoriteService)
-    // private readonly favoriteService: FavoriteService,
+    @inject(Component.FavoriteService)
+    private readonly favoriteService: FavoriteService,
   ) {
     super(logger);
 
@@ -47,6 +47,12 @@ export class OfferController extends BaseController {
       path: '/premium',
       method: HttpMethod.Get,
       handler: this.getPremiumOffersByCity,
+    });
+    this.addRoute({
+      path: '/favorites',
+      method: HttpMethod.Get,
+      handler: this.getFavorites,
+      middlewares: [new PrivateRouteMiddleware()],
     });
     this.addRoute({
       path: '/',
@@ -96,14 +102,35 @@ export class OfferController extends BaseController {
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ],
     });
+    this.addRoute({
+      path: '/:offerId/favorite',
+      method: HttpMethod.Post,
+      handler: this.addFavorite,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+      ],
+    });
+    this.addRoute({
+      path: '/:offerId/favorite',
+      method: HttpMethod.Delete,
+      handler: this.removeFavorite,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+      ],
+    });
   }
 
   public async show(
-    { params }: Request<ParamOfferId>,
+    { params, tokenPayload }: Request<ParamOfferId>,
     res: Response,
   ): Promise<void> {
     const { offerId } = params;
-    const offer = await this.offerService.findById(offerId);
+    const userId = tokenPayload?.id;
+    const offer = await this.offerService.findById(offerId, userId);
     this.ok(res, fillDTO(OfferRdo, offer));
   }
 
@@ -185,5 +212,38 @@ export class OfferController extends BaseController {
       limit,
     );
     this.ok(res, fillDTO(OfferRdo, premiumOffersByCity));
+  }
+
+  public async addFavorite(
+    { params, tokenPayload }: Request<ParamOfferId>,
+    res: Response,
+  ): Promise<void> {
+    const favorite = await this.favoriteService.add(
+      tokenPayload.id,
+      params.offerId,
+    );
+    this.noContent(res, favorite);
+  }
+
+  public async removeFavorite(
+    { params, tokenPayload }: Request<ParamOfferId>,
+    res: Response,
+  ): Promise<void> {
+    const favorite = await this.favoriteService.remove(
+      tokenPayload.id,
+      params.offerId,
+    );
+    this.noContent(res, favorite);
+  }
+
+  public async getFavorites(
+    { tokenPayload }: Request,
+    res: Response,
+  ): Promise<void> {
+    const offers = await this.favoriteService.getFavoriteOffers(
+      tokenPayload.id,
+    );
+
+    this.ok(res, fillDTO(OfferRdo, offers));
   }
 }

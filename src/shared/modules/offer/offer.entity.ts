@@ -14,11 +14,10 @@ import {
   HousingValues,
 } from '../../types/index.js';
 import { UserEntity } from '../user/index.js';
-import { Document } from 'mongoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface OfferEntity extends defaultClasses.Base {}
-export type OfferWithFavorite = Omit<OfferEntity, keyof Document> & {
+export type OfferWithFavorite = OfferEntity & {
   isFavorite: boolean;
 };
 

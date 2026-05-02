@@ -5,6 +5,7 @@ import { CoordinatesRdo } from './coordinates.rdo.js';
 
 export class OfferRdo {
   @Expose()
+  @Transform(({ obj }) => obj.id ?? obj._id?.toString())
   public id: string;
 
   @Expose()

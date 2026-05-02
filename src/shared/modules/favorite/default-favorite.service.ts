@@ -4,6 +4,7 @@ import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { types } from '@typegoose/typegoose';
 import { FavoriteEntity } from './favorite.entity.js';
+import { OfferEntity, OfferWithFavorite } from '../offer/index.js';
 
 @injectable()
 export class DefaultFavoriteService implements FavoriteService {
@@ -51,5 +52,24 @@ export class DefaultFavoriteService implements FavoriteService {
       .lean();
 
     return favorites.map((item) => item.offerId.toString());
+  }
+
+  public async getFavoriteOffers(userId: string): Promise<OfferWithFavorite[]> {
+    const favorites = await this.favoriteModel
+      .find({ userId })
+      .populate({
+        path: 'offerId',
+        populate: { path: 'userId' },
+      })
+      .lean();
+
+    return favorites.map((fav) => ({
+      ...(fav.offerId as OfferEntity),
+      isFavorite: true,
+    }));
+  }
+
+  public async exists(documentId: string): Promise<boolean> {
+    return (await this.favoriteModel.exists({ _id: documentId })) !== null;
   }
 }
