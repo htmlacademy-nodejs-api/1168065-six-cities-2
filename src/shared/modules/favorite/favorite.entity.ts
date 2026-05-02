@@ -1,10 +1,9 @@
 import {
   prop,
-  index,
   getModelForClass,
-  Ref,
   modelOptions,
   defaultClasses,
+  Ref,
 } from '@typegoose/typegoose';
 import { UserEntity } from '../user/index.js';
 import { OfferEntity } from '../offer/index.js';
@@ -18,19 +17,13 @@ export interface FavoriteEntity extends defaultClasses.Base {}
     timestamps: true,
   },
 })
-@index({ userId: 1, offerId: 1 }, { unique: true })
+
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class FavoriteEntity extends defaultClasses.TimeStamps {
-  @prop({
-    ref: UserEntity,
-    required: true,
-  })
+  @prop({ required: true, ref: UserEntity })
   public userId!: Ref<UserEntity>;
 
-  @prop({
-    ref: OfferEntity,
-    required: true,
-  })
+  @prop({ required: true, ref: OfferEntity })
   public offerId!: Ref<OfferEntity>;
 }
 
