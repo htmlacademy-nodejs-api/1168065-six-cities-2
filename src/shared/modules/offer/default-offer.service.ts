@@ -98,7 +98,7 @@ export class DefaultOfferService implements OfferService {
       .exec();
   }
 
-  async calcRating(offerId: string): Promise<void> {
+  public async calcRating(offerId: string): Promise<void> {
     const ratings = await this.commentModel.aggregate([
       { $match: { offerId: new Types.ObjectId(offerId) } },
       { $group: { _id: '$offerId', avgRating: { $avg: '$rating' } } },

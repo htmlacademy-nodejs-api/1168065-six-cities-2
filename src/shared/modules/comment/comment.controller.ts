@@ -2,10 +2,10 @@ import { Response } from 'express';
 import { inject, injectable } from 'inversify';
 import {
   BaseController,
-  DocumentExistsMiddleware,
   HttpMethod,
   ValidateDtoMiddleware,
   PrivateRouteMiddleware,
+  ValidateObjectIdMiddleware,
 } from '../../libs/rest/index.js';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
@@ -34,7 +34,7 @@ export default class CommentController extends BaseController {
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CreateCommentDTO),
-        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new ValidateObjectIdMiddleware('offerId'),
       ],
     });
   }
