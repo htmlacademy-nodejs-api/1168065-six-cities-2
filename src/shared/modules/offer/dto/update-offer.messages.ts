@@ -23,9 +23,6 @@ export const CreateUpdateOfferMessage = {
   isPremium: {
     invalidFormat: 'isPremium must be a boolean',
   },
-  isFavorite: {
-    invalidFormat: 'isFavorite must be a boolean',
-  },
   rating: {
     invalidFormat: 'rating must be a number with max 1 decimal place',
     minValue: 'Minimum rating is 0',

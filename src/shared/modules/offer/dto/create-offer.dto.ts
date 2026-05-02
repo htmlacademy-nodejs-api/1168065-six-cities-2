@@ -67,9 +67,6 @@ export class CreateOfferDTO {
   @IsBoolean({ message: CreateOfferValidationMessage.isPremium.invalidFormat })
   isPremium: boolean;
 
-  @IsBoolean({ message: CreateOfferValidationMessage.isFavorite.invalidFormat })
-  isFavorite: boolean;
-
   @IsNumber(
     { maxDecimalPlaces: 1 },
     { message: CreateOfferValidationMessage.rating.invalidFormat },

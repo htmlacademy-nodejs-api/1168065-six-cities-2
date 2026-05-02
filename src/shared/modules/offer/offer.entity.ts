@@ -14,9 +14,13 @@ import {
   HousingValues,
 } from '../../types/index.js';
 import { UserEntity } from '../user/index.js';
+import { Document } from 'mongoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface OfferEntity extends defaultClasses.Base {}
+export type OfferWithFavorite = Omit<OfferEntity, keyof Document> & {
+  isFavorite: boolean;
+};
 
 @modelOptions({
   schemaOptions: {
@@ -46,9 +50,6 @@ export class OfferEntity extends defaultClasses.TimeStamps {
 
   @prop({ required: true })
   public isPremium!: boolean;
-
-  @prop({ default: false })
-  public isFavorite!: boolean;
 
   @prop({ default: 0 })
   public rating!: number;
