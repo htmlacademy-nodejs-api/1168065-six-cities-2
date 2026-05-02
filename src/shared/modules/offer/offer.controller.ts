@@ -161,10 +161,14 @@ export class OfferController extends BaseController {
   }
 
   public async getPremiumOffersByCity(
-    { query }: Request<ParamsDictionary, unknown, unknown, RequestQuery>,
+    {
+      query,
+      tokenPayload,
+    }: Request<ParamsDictionary, unknown, unknown, RequestQuery>,
     res: Response,
   ): Promise<void> {
     const city = String(query.city).trim() as City;
+    const userId = tokenPayload?.id;
     const limit = query.limit && Number(query.limit);
 
     if (!city) {
@@ -177,6 +181,7 @@ export class OfferController extends BaseController {
 
     const premiumOffersByCity = await this.offerService.findPremiumByCity(
       city,
+      userId,
       limit,
     );
     this.ok(res, fillDTO(OfferRdo, premiumOffersByCity));

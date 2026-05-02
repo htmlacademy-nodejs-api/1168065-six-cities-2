@@ -125,17 +125,34 @@ export class DefaultOfferService implements OfferService {
 
   public async findPremiumByCity(
     city: City,
+    userId?: string,
     count?: number,
-  ): Promise<types.DocumentType<OfferEntity>[]> {
+  ): Promise<OfferWithFavorite[]> {
     if (!city) {
       return [];
     }
 
-    return this.offerModel
+    const premiumOffers = await this.offerModel
       .find({ city, isPremium: true })
       .sort({ createdAt: SortType.Down })
       .limit(count ?? DEFAULT_PREMIUM_OFFER_COUNT)
       .populate(['userId'])
+      .lean()
       .exec();
+
+    if (!userId) {
+      return premiumOffers.map((offer) => ({ ...offer, isFavorite: false }));
+    }
+
+    const favoriteIds = await this.favoriteModel.distinct('offerId', {
+      userId,
+    });
+
+    const set = new Set(favoriteIds.map(String));
+
+    return premiumOffers.map((offer) => ({
+      ...offer,
+      isFavorite: set.has(offer._id.toString()),
+    }));
   }
 }
