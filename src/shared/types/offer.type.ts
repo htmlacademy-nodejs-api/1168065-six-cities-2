@@ -12,8 +12,6 @@ export type Offer = {
   previewImage: string;
   images: string[]; // всегда 6
   isPremium: boolean;
-  isFavorite: boolean;
-  rating: number; // 0–5 (1 знак после запятой)
   type: Housing;
   rooms: number; // 1–8
   guests: number; // 1–10
@@ -21,4 +19,9 @@ export type Offer = {
   facilities: Facility[];
   host: User;
   location: Coordinates;
+};
+
+export type OfferWithCalculatedValues = Offer & {
+  isFavorite: boolean;
+  rating: number; // 0–5 (1 знак после запятой)
 };
