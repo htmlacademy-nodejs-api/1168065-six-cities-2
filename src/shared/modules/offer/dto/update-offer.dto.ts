@@ -73,10 +73,6 @@ export class UpdateOfferDTO {
   isPremium: boolean;
 
   @IsOptional()
-  @IsBoolean({ message: CreateUpdateOfferMessage.isFavorite.invalidFormat })
-  isFavorite: boolean;
-
-  @IsOptional()
   @IsNumber(
     { maxDecimalPlaces: 1 },
     { message: CreateUpdateOfferMessage.rating.invalidFormat },

@@ -5,6 +5,7 @@ import { CoordinatesRdo } from './coordinates.rdo.js';
 
 export class OfferRdo {
   @Expose()
+  @Transform(({ obj }) => obj.id ?? obj._id?.toString())
   public id: string;
 
   @Expose()
@@ -14,7 +15,9 @@ export class OfferRdo {
   public description: string;
 
   @Expose()
-  @Transform(({ value }) => value.toISOString())
+  @Transform(({ value }) =>
+    value instanceof Date ? value.toISOString() : value,
+  )
   public publishDate: string;
 
   @Expose()

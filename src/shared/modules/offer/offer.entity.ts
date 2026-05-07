@@ -17,6 +17,9 @@ import { UserEntity } from '../user/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface OfferEntity extends defaultClasses.Base {}
+export type OfferWithFavorite = OfferEntity & {
+  isFavorite: boolean;
+};
 
 @modelOptions({
   schemaOptions: {
@@ -47,11 +50,11 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({ required: true })
   public isPremium!: boolean;
 
-  @prop({ required: true })
-  public isFavorite!: boolean;
-
-  @prop({ required: true, min: 0, max: 5 })
+  @prop({ default: 0 })
   public rating!: number;
+
+  @prop({ default: 0 })
+  public commentCount!: number;
 
   @prop({ required: true, type: () => String, enum: HousingValues })
   public type!: Housing;

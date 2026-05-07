@@ -1,17 +1,19 @@
 # Получить объявление по идентификатору
 GET http://localhost:3000/offers/69c98315edbb02aef834bfd1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNjllZTVmMzVmNjEzMTNjMWRkZjBkODJkIiwiaWF0IjoxNzc3ODk4MDMyLCJleHAiOjE3NzgwNzA4MzJ9.ZJqG9wZG5xLb3gyaJ3R5nWLgiVABfWiWbMpqd2-sILE
 
 ###
 
 ## Получить список объявлений
 GET http://localhost:3000/offers?limit=10 HTTP/1.1
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNjllZTVmMzVmNjEzMTNjMWRkZjBkODJkIiwiaWF0IjoxNzc3ODk4MDMyLCJleHAiOjE3NzgwNzA4MzJ9.ZJqG9wZG5xLb3gyaJ3R5nWLgiVABfWiWbMpqd2-sILE
 ###
 
 ## Создать новое объявление
 
 POST http://localhost:3000/offers HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNjllZTVmMzVmNjEzMTNjMWRkZjBkODJkIiwiaWF0IjoxNzc3ODk4MDMyLCJleHAiOjE3NzgwNzA4MzJ9.ZJqG9wZG5xLb3gyaJ3R5nWLgiVABfWiWbMpqd2-sILE
 
 {
   "title": "Modern apartment in city center",
@@ -28,8 +30,6 @@ Content-Type: application/json
     "https://example.com/images/brussels6.jpg"
   ],
   "isPremium": true,
-  "isFavorite": true,
-  "rating": 4.7,
   "type": "apartment",
   "rooms": 2,
   "guests": 3,
@@ -76,5 +76,26 @@ GET http://localhost:3000/offers/69c98315edbb02aef834bfd1/comments HTTP/1.1
 
 ## Получить список премиальных объявлений по городу
 GET http://localhost:3000/offers/premium?city=Paris&limit=10 HTTP/1.1
+
+###
+
+## Добавить в избранное
+
+POST http://localhost:3000/offers/69c98315edbb02aef834bfd1/favorite HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNjllZTVmMzVmNjEzMTNjMWRkZjBkODJkIiwiaWF0IjoxNzc3ODk4MDMyLCJleHAiOjE3NzgwNzA4MzJ9.ZJqG9wZG5xLb3gyaJ3R5nWLgiVABfWiWbMpqd2-sILE
+
+###
+
+## Удалить из избранного
+
+DELETE http://localhost:3000/offers/69c98315edbb02aef834bfd1/favorite HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNjllZTVmMzVmNjEzMTNjMWRkZjBkODJkIiwiaWF0IjoxNzc3ODk4MDMyLCJleHAiOjE3NzgwNzA4MzJ9.ZJqG9wZG5xLb3gyaJ3R5nWLgiVABfWiWbMpqd2-sILE
+
+###
+
+## Получить избранные объявления
+
+GET http://localhost:3000/offers/favorites HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNjllZTVmMzVmNjEzMTNjMWRkZjBkODJkIiwiaWF0IjoxNzc3ODk4MDMyLCJleHAiOjE3NzgwNzA4MzJ9.ZJqG9wZG5xLb3gyaJ3R5nWLgiVABfWiWbMpqd2-sILE
 
 ###

@@ -8,8 +8,6 @@ import {
   IsEnum,
   IsIn,
   IsInt,
-  IsMongoId,
-  IsNumber,
   IsUrl,
   Max,
   MaxLength,
@@ -68,17 +66,6 @@ export class CreateOfferDTO {
   @IsBoolean({ message: CreateOfferValidationMessage.isPremium.invalidFormat })
   isPremium: boolean;
 
-  @IsBoolean({ message: CreateOfferValidationMessage.isFavorite.invalidFormat })
-  isFavorite: boolean;
-
-  @IsNumber(
-    { maxDecimalPlaces: 1 },
-    { message: CreateOfferValidationMessage.rating.invalidFormat },
-  )
-  @Min(0, { message: CreateOfferValidationMessage.rating.minValue })
-  @Max(5, { message: CreateOfferValidationMessage.rating.maxValue })
-  rating: number;
-
   @IsIn(HousingValues, { message: CreateOfferValidationMessage.type.invalid })
   type: Housing;
 
@@ -107,7 +94,6 @@ export class CreateOfferDTO {
   })
   facilities: Facility[];
 
-  @IsMongoId({ message: CreateOfferValidationMessage.userId.invalidId })
   userId: string;
 
   @ValidateNested({ message: CreateOfferValidationMessage.location.invalid })

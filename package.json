@@ -19,7 +19,7 @@
     "mock:server": "json-server ./mocks/mock-server-data.json --port 3123"
   },
   "devDependencies": {
-    "@typegoose/typegoose": "13.2.1",
+    "@typegoose/typegoose": "11.8.1",
     "@types/convict": "6.1.6",
     "@types/convict-format-with-validator": "6.0.6",
     "@types/express": "5.0.6",
@@ -55,8 +55,9 @@
     "got": "14.6.6",
     "http-status-codes": "2.3.0",
     "inversify": "6.2.2",
+    "jose": "6.2.3",
     "mime-types": "3.0.2",
-    "mongoose": "9.2.2",
+    "mongoose": "7.8.9",
     "multer": "2.1.1",
     "nanoid": "5.1.9",
     "nodemon": "3.1.14",

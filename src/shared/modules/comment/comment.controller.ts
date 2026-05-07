@@ -2,9 +2,10 @@ import { Response } from 'express';
 import { inject, injectable } from 'inversify';
 import {
   BaseController,
-  DocumentExistsMiddleware,
   HttpMethod,
   ValidateDtoMiddleware,
+  PrivateRouteMiddleware,
+  ValidateObjectIdMiddleware,
 } from '../../libs/rest/index.js';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
@@ -31,19 +32,24 @@ export default class CommentController extends BaseController {
       method: HttpMethod.Post,
       handler: this.create,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CreateCommentDTO),
-        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new ValidateObjectIdMiddleware('offerId'),
       ],
     });
   }
 
   public async create(
-    { body }: CreateCommentRequest,
+    { body, tokenPayload }: CreateCommentRequest,
     res: Response,
   ): Promise<void> {
     const { offerId } = body;
-    const comment = await this.commentService.create(body);
+    const comment = await this.commentService.create({
+      ...body,
+      userId: tokenPayload.id,
+    });
     await this.offerService.incCommentCount(offerId);
+    await this.offerService.calcRating(offerId);
     this.created(res, fillDTO(CommentRdo, comment));
   }
 }
