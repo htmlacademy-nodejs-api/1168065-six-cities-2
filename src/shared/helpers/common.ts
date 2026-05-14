@@ -1,14 +1,20 @@
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { ValidationError } from 'class-validator';
-import { ValidationErrorField } from '../libs/rest/index.js';
+import { ApplicationError, ValidationErrorField } from '../libs/rest/index.js';
 
 export function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : '';
 }
 
-export function createErrorObject(message: string) {
+export function createErrorObject(
+  errorType: ApplicationError,
+  error: string,
+  details: ValidationErrorField[] = [],
+) {
   return {
-    error: message,
+    errorType,
+    error,
+    details,
   };
 }
 
