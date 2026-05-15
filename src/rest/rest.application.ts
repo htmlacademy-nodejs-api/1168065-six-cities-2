@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express, { Express } from 'express';
 import { inject, injectable } from 'inversify';
 import { Logger } from '../shared/libs/logger/index.js';
@@ -79,6 +80,7 @@ export class RestApplication {
     this.server.use(
       authenticateMiddleware.execute.bind(authenticateMiddleware),
     );
+    this.server.use(cors());
   }
 
   private async _initExceptionFilters() {

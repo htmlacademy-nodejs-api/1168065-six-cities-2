@@ -1,6 +1,5 @@
 /* eslint-disable indent */
 import {
-  ArrayMaxSize,
   ArrayMinSize,
   IsArray,
   IsBoolean,
@@ -8,7 +7,6 @@ import {
   IsEnum,
   IsIn,
   IsInt,
-  IsUrl,
   Max,
   MaxLength,
   Min,
