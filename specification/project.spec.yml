@@ -75,17 +75,6 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /users/logout:
-    post:
-      tags: [users]
-      summary: Выход пользователя
-      description: Завершает пользовательскую сессию
-      responses:
-        '204':
-          description: Успешный выход
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-
   /users/{userId}/avatar:
     post:
       tags: [users]
