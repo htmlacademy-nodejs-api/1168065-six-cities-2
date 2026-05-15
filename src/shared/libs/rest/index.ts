@@ -19,3 +19,4 @@ export * from './types/validation-error-field.type.js';
 export * from './types/application-error.enum.js';
 export * from './exception-filter/validation.exception-filter.js';
 export * from './exception-filter/http.exception-filter.js';
+export * from './middleware/upload-files.middleware.js';

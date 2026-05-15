@@ -9,7 +9,7 @@ import { UpdateOfferDTO } from './dto/update-offer.dto.js';
 import {
   DEFAULT_OFFER_COUNT,
   DEFAULT_PREMIUM_OFFER_COUNT,
-} from './offer.constants.js';
+} from './offer.constant.js';
 import { CommentEntity } from '../comment/index.js';
 import { Types } from 'mongoose';
 import { FavoriteEntity } from '../favorite/index.js';

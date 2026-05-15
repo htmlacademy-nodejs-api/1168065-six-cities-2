@@ -6,3 +6,5 @@ export * from './offer.container.js';
 export * from './offer.controller.js';
 export * from './rdo/offer.rdo.js';
 export * from './dto/create-offer.messages.js';
+export * from './rdo/upload-images.rdo.js';
+export * from './rdo/upload-preview.rdo.js';

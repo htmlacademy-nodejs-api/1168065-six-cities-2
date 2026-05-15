@@ -8,6 +8,8 @@ import {
   HttpMethod,
   PrivateRouteMiddleware,
   RequestQuery,
+  UploadFileMiddleware,
+  UploadFilesMiddleware,
   ValidateDtoMiddleware,
   ValidateObjectIdMiddleware,
 } from '../../libs/rest/index.js';
@@ -23,6 +25,10 @@ import { ParamsDictionary } from 'express-serve-static-core';
 import { CommentRdo, CommentService } from '../comment/index.js';
 import { CreateOfferDTO } from './dto/create-offer.dto.js';
 import { FavoriteService } from '../favorite/index.js';
+import { Config, RestSchema } from '../../libs/config/index.js';
+import { OFFER_IMAGES_LENGTH } from './offer.constant.js';
+import { UploadImagesRdo } from './rdo/upload-images.rdo.js';
+import { UploadPreviewRdo } from './rdo/upload-preview.rdo.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -34,6 +40,8 @@ export class OfferController extends BaseController {
     private readonly commentService: CommentService,
     @inject(Component.FavoriteService)
     private readonly favoriteService: FavoriteService,
+    @inject(Component.Config)
+    private readonly configService: Config<RestSchema>,
   ) {
     super(logger);
 
@@ -120,6 +128,35 @@ export class OfferController extends BaseController {
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+      ],
+    });
+    this.addRoute({
+      path: '/:offerId/preview',
+      method: HttpMethod.Post,
+      handler: this.uploadPreview,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new UploadFileMiddleware(
+          this.configService.get('UPLOAD_DIRECTORY'),
+          'preview',
+        ),
+      ],
+    });
+    this.addRoute({
+      path: '/:offerId/images',
+      method: HttpMethod.Post,
+      handler: this.uploadImages,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new UploadFilesMiddleware(
+          this.configService.get('UPLOAD_DIRECTORY'),
+          'images',
+          OFFER_IMAGES_LENGTH,
+        ),
       ],
     });
   }
@@ -245,5 +282,49 @@ export class OfferController extends BaseController {
     );
 
     this.ok(res, fillDTO(OfferRdo, offers));
+  }
+
+  public async uploadPreview(
+    { params, file }: Request<ParamOfferId>,
+    res: Response,
+  ): Promise<void> {
+    const { offerId } = params;
+
+    if (!file) {
+      throw new HttpError(
+        StatusCodes.UNPROCESSABLE_ENTITY,
+        'Preview image is required',
+        'OfferController',
+      );
+    }
+
+    const updatedOffer = await this.offerService.updateById(offerId, {
+      previewImage: file.filename,
+    });
+    const previewRdo = fillDTO(UploadPreviewRdo, updatedOffer);
+    this.created(res, previewRdo);
+  }
+
+  public async uploadImages(
+    { params, files }: Request<ParamOfferId>,
+    res: Response,
+  ): Promise<void> {
+    const { offerId } = params;
+    const filesToUpload = Array.isArray(files) ? files : undefined;
+
+    if (!filesToUpload || filesToUpload.length !== OFFER_IMAGES_LENGTH) {
+      throw new HttpError(
+        StatusCodes.UNPROCESSABLE_ENTITY,
+        `Images must contain exactly ${OFFER_IMAGES_LENGTH} items`,
+        'OfferController',
+      );
+    }
+
+    const images = filesToUpload.map((file) => file.filename);
+    const updatedOffer = await this.offerService.updateById(offerId, {
+      images,
+    });
+    const imagesRdo = fillDTO(UploadImagesRdo, updatedOffer);
+    this.created(res, imagesRdo);
   }
 }

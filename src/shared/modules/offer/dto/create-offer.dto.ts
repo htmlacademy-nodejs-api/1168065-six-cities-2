@@ -48,21 +48,6 @@ export class CreateOfferDTO {
   @IsEnum(City, { message: CreateOfferValidationMessage.city.invalid })
   city: City;
 
-  @IsUrl(
-    {},
-    { message: CreateOfferValidationMessage.previewImage.invalidFormat },
-  )
-  previewImage: string;
-
-  @IsArray({ message: CreateOfferValidationMessage.images.invalidFormat })
-  @ArrayMinSize(6, {
-    message: CreateOfferValidationMessage.images.invalidLength,
-  })
-  @ArrayMaxSize(6, {
-    message: CreateOfferValidationMessage.images.invalidLength,
-  })
-  images: string[];
-
   @IsBoolean({ message: CreateOfferValidationMessage.isPremium.invalidFormat })
   isPremium: boolean;
 
