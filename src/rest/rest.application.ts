@@ -10,8 +10,9 @@ import {
   Controller,
   ExceptionFilter,
   ParseTokenMiddleware,
+  STATIC_FILES_ROUTE,
+  STATIC_UPLOAD_ROUTE,
 } from '../shared/libs/rest/index.js';
-import { STATIC_FILES_ROUTE, STATIC_UPLOAD_ROUTE } from './rest.constant.js';
 
 @injectable()
 export class RestApplication {

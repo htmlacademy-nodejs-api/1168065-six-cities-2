@@ -20,3 +20,4 @@ export * from './types/application-error.enum.js';
 export * from './exception-filter/validation.exception-filter.js';
 export * from './exception-filter/http.exception-filter.js';
 export * from './middleware/upload-files.middleware.js';
+export * from './rest.constant.js';
