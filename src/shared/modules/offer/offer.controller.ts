@@ -2,10 +2,12 @@ import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
 import {
+  ALLOWED_IMAGES,
   BaseController,
   DocumentExistsMiddleware,
   HttpError,
   HttpMethod,
+  MAX_SINGLE_FILE_SIZE,
   PrivateRouteMiddleware,
   RequestQuery,
   UploadFileMiddleware,
@@ -141,6 +143,8 @@ export class OfferController extends BaseController {
         new UploadFileMiddleware(
           this.configService.get('UPLOAD_DIRECTORY'),
           'preview',
+          ALLOWED_IMAGES,
+          MAX_SINGLE_FILE_SIZE,
         ),
       ],
     });
@@ -155,6 +159,8 @@ export class OfferController extends BaseController {
         new UploadFilesMiddleware(
           this.configService.get('UPLOAD_DIRECTORY'),
           'images',
+          ALLOWED_IMAGES,
+          MAX_SINGLE_FILE_SIZE,
           OFFER_IMAGES_LENGTH,
         ),
       ],

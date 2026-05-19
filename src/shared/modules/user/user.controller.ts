@@ -2,9 +2,11 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import {
+  ALLOWED_IMAGES,
   BaseController,
   HttpError,
   HttpMethod,
+  MAX_SINGLE_FILE_SIZE,
   UploadFileMiddleware,
   ValidateDtoMiddleware,
   ValidateObjectIdMiddleware,
@@ -61,6 +63,8 @@ export class UserController extends BaseController {
         new UploadFileMiddleware(
           this.configService.get('UPLOAD_DIRECTORY'),
           'avatar',
+          ALLOWED_IMAGES,
+          MAX_SINGLE_FILE_SIZE,
         ),
       ],
     });
