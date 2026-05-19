@@ -3,15 +3,16 @@ import multer, { diskStorage } from 'multer';
 import { extension } from 'mime-types';
 import { nanoid } from 'nanoid';
 import { Middleware } from './middleware.interface.js';
-import { StatusCodes } from 'http-status-codes';
 import { HttpError } from '../errors/index.js';
+import { StatusCodes } from 'http-status-codes';
 
-export class UploadFileMiddleware implements Middleware {
+export class UploadFilesMiddleware implements Middleware {
   constructor(
     private uploadDirectory: string,
     private fieldName: string,
     private readonly allowedMimeTypes: string[],
     private readonly maxFileSize: number,
+    private readonly maxCount?: number,
   ) {}
 
   public async execute(
@@ -28,7 +29,7 @@ export class UploadFileMiddleware implements Middleware {
       },
     });
 
-    const uploadSingleFileMiddleware = multer({
+    const uploadFilesMiddleware = multer({
       storage,
       limits: {
         fileSize: this.maxFileSize,
@@ -39,23 +40,33 @@ export class UploadFileMiddleware implements Middleware {
             new HttpError(
               StatusCodes.BAD_REQUEST,
               'Invalid file type',
-              'UploadFileMiddleware',
+              'UploadFilesMiddleware',
             ),
           );
         }
 
         callback(null, true);
       },
-    }).single(this.fieldName);
+    }).array(this.fieldName, this.maxCount);
 
-    uploadSingleFileMiddleware(req, res, (error) => {
+    uploadFilesMiddleware(req, res, (error) => {
       if (error instanceof multer.MulterError) {
         if (error.code === 'LIMIT_FILE_SIZE') {
           return next(
             new HttpError(
               StatusCodes.BAD_REQUEST,
               'File is too large',
-              'UploadFileMiddleware',
+              'UploadFilesMiddleware',
+            ),
+          );
+        }
+
+        if (error.code === 'LIMIT_UNEXPECTED_FILE') {
+          return next(
+            new HttpError(
+              StatusCodes.BAD_REQUEST,
+              'Too many files uploaded',
+              'UploadFilesMiddleware',
             ),
           );
         }

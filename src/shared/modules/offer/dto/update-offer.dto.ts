@@ -10,7 +10,6 @@ import {
   ArrayMinSize,
   ArrayMaxSize,
   IsBoolean,
-  IsNumber,
   Min,
   Max,
   IsIn,
@@ -32,7 +31,7 @@ export class UpdateOfferDTO {
   @IsOptional()
   @MinLength(10, { message: CreateUpdateOfferMessage.title.minLength })
   @MaxLength(100, { message: CreateUpdateOfferMessage.title.maxLength })
-  title: string;
+  public title?: string;
 
   @IsOptional()
   @MinLength(20, {
@@ -41,22 +40,22 @@ export class UpdateOfferDTO {
   @MaxLength(1024, {
     message: CreateUpdateOfferMessage.description.maxLength,
   })
-  description: string;
+  public description?: string;
 
   @IsOptional()
   @IsDateString(
     {},
     { message: CreateUpdateOfferMessage.publishDate.invalidFormat },
   )
-  publishDate: Date;
+  public publishDate?: Date;
 
   @IsOptional()
   @IsEnum(City, { message: CreateUpdateOfferMessage.city.invalid })
-  city: City;
+  public city?: City;
 
   @IsOptional()
   @IsUrl({}, { message: CreateUpdateOfferMessage.previewImage.invalidFormat })
-  previewImage: string;
+  public previewImage?: string;
 
   @IsOptional()
   @IsArray({ message: CreateUpdateOfferMessage.images.invalidFormat })
@@ -66,42 +65,33 @@ export class UpdateOfferDTO {
   @ArrayMaxSize(6, {
     message: CreateUpdateOfferMessage.images.invalidLength,
   })
-  images: string[];
+  public images?: string[];
 
   @IsOptional()
   @IsBoolean({ message: CreateUpdateOfferMessage.isPremium.invalidFormat })
-  isPremium: boolean;
-
-  @IsOptional()
-  @IsNumber(
-    { maxDecimalPlaces: 1 },
-    { message: CreateUpdateOfferMessage.rating.invalidFormat },
-  )
-  @Min(0, { message: CreateUpdateOfferMessage.rating.minValue })
-  @Max(5, { message: CreateUpdateOfferMessage.rating.maxValue })
-  rating: number;
+  public isPremium?: boolean;
 
   @IsOptional()
   @IsIn(HousingValues, { message: CreateUpdateOfferMessage.type.invalid })
-  type: Housing;
+  public type?: Housing;
 
   @IsOptional()
   @IsInt({ message: CreateUpdateOfferMessage.rooms.invalidFormat })
   @Min(1, { message: CreateUpdateOfferMessage.rooms.minValue })
   @Max(8, { message: CreateUpdateOfferMessage.rooms.maxValue })
-  rooms: number;
+  public rooms?: number;
 
   @IsOptional()
   @IsInt({ message: CreateUpdateOfferMessage.guests.invalidFormat })
   @Min(1, { message: CreateUpdateOfferMessage.guests.minValue })
   @Max(10, { message: CreateUpdateOfferMessage.guests.maxValue })
-  guests: number;
+  public guests?: number;
 
   @IsOptional()
   @IsInt({ message: CreateUpdateOfferMessage.price.invalidFormat })
   @Min(100, { message: CreateUpdateOfferMessage.price.minValue })
   @Max(100000, { message: CreateUpdateOfferMessage.price.maxValue })
-  price: number;
+  public price?: number;
 
   @IsOptional()
   @IsArray({ message: CreateUpdateOfferMessage.facilities.invalidFormat })
@@ -112,10 +102,10 @@ export class UpdateOfferDTO {
     each: true,
     message: CreateUpdateOfferMessage.facilities.invalidValue,
   })
-  facilities: Facility[];
+  public facilities?: Facility[];
 
   @IsOptional()
   @ValidateNested({ message: CreateUpdateOfferMessage.location.invalid })
   @Type(() => CoordinatesDto)
-  location: CoordinatesDto;
+  public location?: CoordinatesDto;
 }
