@@ -29,6 +29,7 @@ export type RestSchema = {
   JWT_SECRET: string;
   HOST: string;
   STATIC_DIRECTORY_PATH: string;
+  DEFAULT_USER_PASSWORD: string;
 };
 
 export const configRestSchema = convict<RestSchema>({
@@ -97,5 +98,11 @@ export const configRestSchema = convict<RestSchema>({
     format: String,
     env: 'STATIC_DIRECTORY_PATH',
     default: 'static',
+  },
+  DEFAULT_USER_PASSWORD: {
+    doc: 'Default user password for import',
+    format: String,
+    env: 'DEFAULT_USER_PASSWORD',
+    default: 'password',
   },
 });
