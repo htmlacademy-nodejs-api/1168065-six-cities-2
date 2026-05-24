@@ -63,8 +63,8 @@ export class DefaultFavoriteService implements FavoriteService {
       })
       .lean();
 
-    return favorites.map((fav) => ({
-      ...(fav.offerId as OfferEntity),
+    return favorites.map((favorite) => ({
+      ...(favorite.offerId as OfferEntity),
       isFavorite: true,
     }));
   }

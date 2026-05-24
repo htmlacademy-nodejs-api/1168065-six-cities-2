@@ -40,7 +40,7 @@ export class TSVOfferGenerator implements OfferGenerator {
     const email = getRandomItem(this.mockData.emails);
     const avatarPath = getRandomItem(this.mockData.avatars);
     const userType = generateRandomBoolean() ? 'pro' : 'base';
-    const location = [
+    const coordinates = [
       generateRandomValue(LATITUDE.min, LATITUDE.max, 6),
       generateRandomValue(LONGITUDE.min, LONGITUDE.max, 6),
     ].join(';');
@@ -63,7 +63,7 @@ export class TSVOfferGenerator implements OfferGenerator {
       email,
       avatarPath,
       userType,
-      location,
+      coordinates,
     ].join('\t');
   }
 }
