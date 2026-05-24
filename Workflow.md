@@ -49,6 +49,7 @@ JWT_SECRET=secret
 - `UPLOAD_DIRECTORY` - директория для загружаемых файлов.
 - `STATIC_DIRECTORY_PATH` - директория со статическими файлами.
 - `JWT_SECRET` - секрет для подписи JWT.
+- `DEFAULT_USER_PASSWORD` - пароль по умолчанию для создания новых пользователей при выполнении импорта.
 
 ### 3. Запустить MongoDB
 
