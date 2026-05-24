@@ -7,6 +7,7 @@ import {
   HttpError,
   HttpMethod,
   MAX_SINGLE_FILE_SIZE,
+  PrivateRouteMiddleware,
   UploadFileMiddleware,
   ValidateDtoMiddleware,
   ValidateObjectIdMiddleware,
@@ -113,6 +114,7 @@ export class UserController extends BaseController {
       path: '/login',
       method: HttpMethod.Get,
       handler: this.checkAuth,
+      middlewares: [new PrivateRouteMiddleware()],
     });
     this.addRoute({
       path: '/:userId/avatar',
