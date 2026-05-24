@@ -90,9 +90,11 @@ export class OfferController extends BaseController {
     res: Response,
   ): Promise<void> {
     const { offerId } = params;
+
     const offer = await this.offerService.deleteById(offerId);
     await this.commentService.deleteByOfferId(offerId);
     await this.favoriteService.deleteByOfferId(offerId);
+
     this.noContent(res, offer);
   }
 

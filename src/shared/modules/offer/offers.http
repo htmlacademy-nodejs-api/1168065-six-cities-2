@@ -6,7 +6,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZ
 
 ## Получить список объявлений
 GET http://localhost:3000/offers?limit=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNjllZTVmMzVmNjEzMTNjMWRkZjBkODJkIiwiaWF0IjoxNzc3ODk4MDMyLCJleHAiOjE3NzgwNzA4MzJ9.ZJqG9wZG5xLb3gyaJ3R5nWLgiVABfWiWbMpqd2-sILE
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNmExMzY5MTQwMjUxZGFhZGFlZTVlMTM2IiwiaWF0IjoxNzc5NjU2OTg4LCJleHAiOjE3Nzk4Mjk3ODh9.x5fodXNwaoXr9sWf5MrWDOcqPw11srZt8cbTZlW8E8g
 ###
 
 ## Создать новое объявление
@@ -52,8 +52,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZ
 ###
 
 ## Удалить объявление по идентификатору
-
-DELETE http://localhost:3000/offers/69efaafe88e8c8826882b397 HTTP/1.1
+DELETE http://localhost:3000/offers/6a135a60cf8b052690407eaa HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNmExMzY5MTQwMjUxZGFhZGFlZTVlMTM2IiwiaWF0IjoxNzc5NjU2OTg4LCJleHAiOjE3Nzk4Mjk3ODh9.x5fodXNwaoXr9sWf5MrWDOcqPw11srZt8cbTZlW8E8g
 
 ###
 
