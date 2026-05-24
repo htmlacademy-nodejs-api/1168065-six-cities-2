@@ -20,20 +20,14 @@ export class DefaultFavoriteService implements FavoriteService {
       { $setOnInsert: { userId, offerId } },
       { upsert: true },
     );
-
-    this.logger.info(`Offer ${offerId} added to favorites for user ${userId}`);
   }
 
-  public async remove(userId: string, offerId: string): Promise<void> {
+  public async delete(userId: string, offerId: string): Promise<void> {
     await this.favoriteModel.deleteOne({ userId, offerId }).exec();
-    this.logger.info(
-      `Offer ${offerId} removed from favorites for user ${userId}`,
-    );
   }
 
-  public async removeByOfferId(offerId: string): Promise<void> {
+  public async deleteByOfferId(offerId: string): Promise<void> {
     await this.favoriteModel.deleteMany({ offerId }).exec();
-    this.logger.info(`All favorites removed for offer ${offerId}`);
   }
 
   public async getOffers(userId: string): Promise<OfferWithFavorite[]> {

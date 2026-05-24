@@ -125,7 +125,7 @@ export class OfferController extends BaseController {
     this.addRoute({
       path: '/:offerId/favorite',
       method: HttpMethod.Delete,
-      handler: this.removeFavorite,
+      handler: this.deleteFavorite,
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
@@ -209,6 +209,7 @@ export class OfferController extends BaseController {
     const { offerId } = params;
     const offer = await this.offerService.deleteById(offerId);
     await this.commentService.deleteByOfferId(offerId);
+    await this.favoriteService.deleteByOfferId(offerId);
     this.noContent(res, offer);
   }
 
@@ -268,11 +269,11 @@ export class OfferController extends BaseController {
     this.noContent(res, favorite);
   }
 
-  public async removeFavorite(
+  public async deleteFavorite(
     { params, tokenPayload }: Request<ParamOfferId>,
     res: Response,
   ): Promise<void> {
-    const favorite = await this.favoriteService.remove(
+    const favorite = await this.favoriteService.delete(
       tokenPayload.id,
       params.offerId,
     );
