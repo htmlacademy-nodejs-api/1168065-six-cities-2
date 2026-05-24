@@ -5,7 +5,6 @@ import {
   parseHousing,
   UserType,
 } from '../types/index.js';
-import { booleanFromString } from './types-helpers.js';
 
 export function createOffer(offerData: string): Offer {
   const [
@@ -36,7 +35,7 @@ export function createOffer(offerData: string): Offer {
     city: City[city as keyof typeof City],
     previewImage,
     images: images.split(';'),
-    isPremium: booleanFromString(isPremium),
+    isPremium: isPremium.toLowerCase() === 'true',
     type: parseHousing(type),
     rooms: parseInt(rooms, 10),
     guests: parseInt(guests, 10),

@@ -1,5 +1,3 @@
-export const booleanFromString = (str: string) => str.toLowerCase() === 'true';
-
 export function createStringUnionGuard<T extends readonly string[]>(values: T) {
   const set = new Set(values);
 
