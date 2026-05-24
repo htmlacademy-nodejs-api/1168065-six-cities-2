@@ -283,9 +283,7 @@ export class OfferController extends BaseController {
     { tokenPayload }: Request,
     res: Response,
   ): Promise<void> {
-    const offers = await this.favoriteService.getFavoriteOffers(
-      tokenPayload.id,
-    );
+    const offers = await this.favoriteService.getOffers(tokenPayload.id);
 
     this.ok(res, fillDTO(OfferRdo, offers));
   }

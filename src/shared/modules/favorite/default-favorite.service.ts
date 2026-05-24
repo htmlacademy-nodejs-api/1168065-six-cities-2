@@ -36,10 +36,7 @@ export class DefaultFavoriteService implements FavoriteService {
     this.logger.info(`All favorites removed for offer ${offerId}`);
   }
 
-  public async getFavoriteStatus(
-    userId: string,
-    offerId: string,
-  ): Promise<boolean> {
+  public async getStatus(userId: string, offerId: string): Promise<boolean> {
     const result = await this.favoriteModel.exists({ userId, offerId }).exec();
 
     return result !== null;
@@ -54,7 +51,7 @@ export class DefaultFavoriteService implements FavoriteService {
     return favorites.map((item) => item.offerId.toString());
   }
 
-  public async getFavoriteOffers(userId: string): Promise<OfferWithFavorite[]> {
+  public async getOffers(userId: string): Promise<OfferWithFavorite[]> {
     const favorites = await this.favoriteModel
       .find({ userId })
       .populate({
