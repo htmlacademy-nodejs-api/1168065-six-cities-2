@@ -9,12 +9,12 @@ info:
   version: 2.0.0
 
 tags:
+  - name: users
+    description: Действия с пользователем.
   - name: offers
     description: Действия с объявлениями.
   - name: comments
     description: Действия с комментариями.
-  - name: users
-    description: Действия с пользователем.
 
 paths:
   /users/register:
@@ -35,10 +35,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '400':
+          description: Ошибка валидации
         '409':
           description: Пользователь уже существует
-        '422':
-          $ref: '#/components/responses/ValidationError'
 
   /users/login:
     post:
@@ -57,21 +57,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthToken'
+                $ref: '#/components/schemas/LoggedUser'
         '401':
           description: Неверный логин или пароль
+        '404':
+          description: Пользователь не найден
 
     get:
       tags: [users]
       summary: Проверка авторизации
       description: Возвращает информацию по авторизованному пользователю
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: Пользователь авторизован
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/LoggedUser'
         '401':
           $ref: '#/components/responses/Unauthorized'
 
@@ -79,21 +83,36 @@ paths:
     post:
       tags: [users]
       summary: Загрузка аватара
-      description: Загружает изображение аватара пользователя. Изображение
-        аватара должно быть в формате `png` или `jpg`.
+      description: Загружает jpg/png аватар пользователя
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: '#/components/parameters/userId'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - avatar
+              properties:
+                avatar:
+                  type: string
+                  format: binary
       responses:
-        '200':
-          description: Аватар загружен
+        '201':
+          description: Аватар успешно загружен
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UploadUserAvatar'
         '400':
           description: Неверный формат файла
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Доступ запрещён
 
   /offers:
     get:
@@ -117,6 +136,8 @@ paths:
     post:
       tags: [offers]
       summary: Создать предложение
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -156,6 +177,8 @@ paths:
       tags: [offers]
       summary: Обновить предложение
       description: Обновляет информацию о предложении
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: '#/components/parameters/offerId'
       requestBody:
@@ -181,6 +204,8 @@ paths:
     delete:
       tags: [offers]
       summary: Удалить предложение
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: '#/components/parameters/offerId'
       responses:
@@ -211,30 +236,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/Comment'
 
-    post:
-      tags: [comments]
-      summary: Добавить комментарий
-      description: Добавляет новый комментарий к предложению
-      parameters:
-        - $ref: '#/components/parameters/offerId'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateComment'
-      responses:
-        '201':
-          description: Комментарий создан
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Comment'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '422':
-          $ref: '#/components/responses/ValidationError'
-
   /offers/premium:
     get:
       tags: [offers]
@@ -260,6 +261,8 @@ paths:
       tags: [offers]
       summary: Избранные предложения
       description: Возвращает список предложений, добавленных в избранное
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: Список избранных предложений
@@ -277,6 +280,8 @@ paths:
       tags: [offers]
       summary: Добавить предложение в избранное
       description: Добавляет предложение в список избранных
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: '#/components/parameters/offerId'
       responses:
@@ -295,6 +300,8 @@ paths:
       tags: [offers]
       summary: Удалить предложение из избранного
       description: Удаляет предложение из списка избранных
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: '#/components/parameters/offerId'
       responses:
@@ -309,7 +316,40 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /comments:
+    post:
+      tags: [comments]
+      summary: Добавить комментарий
+      description: Добавляет новый комментарий к предложению
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/offerId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateComment'
+      responses:
+        '201':
+          description: Комментарий создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   parameters:
     offerId:
       name: offerId
@@ -337,7 +377,7 @@ components:
       in: query
       required: true
       schema:
-        $ref: '#/components/schemas/CityName'
+        $ref: '#/components/schemas/City'
 
   responses:
     Unauthorized:
@@ -350,22 +390,49 @@ components:
       description: Ошибка валидации данных
 
   schemas:
-    CityName:
+    Error:
+      type: object
+      required:
+        - error
+        - message
+        - statusCode
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        statusCode:
+          type: integer
+    City:
       type: string
       enum: [Paris, Cologne, Brussels, Amsterdam, Hamburg, Dusseldorf]
 
     UserBase:
       type: object
+      required:
+        - email
+        - firstname
+        - lastname
+        - avatarPath
+        - type
       properties:
         email:
           type: string
           format: email
+
         firstname:
           type: string
+          minLength: 1
+          maxLength: 15
+
         lastname:
           type: string
-        avatarUrl:
+          minLength: 1
+          maxLength: 15
+
+        avatarPath:
           type: string
+
         type:
           type: string
           enum: [pro, base]
@@ -381,7 +448,7 @@ components:
 
     CreateUser:
       type: object
-      required: [email, firstname, password, type]
+      required: [email, firstname, lastname, password, type]
       properties:
         email:
           type: string
@@ -402,6 +469,16 @@ components:
           type: string
           enum: [pro, base]
 
+    LoggedUser:
+      allOf:
+        - $ref: '#/components/schemas/UserBase'
+        - type: object
+          required:
+            - token
+          properties:
+            token:
+              type: string
+
     LoginUser:
       type: object
       required: [email, password]
@@ -412,10 +489,12 @@ components:
         password:
           type: string
 
-    AuthToken:
+    UploadUserAvatar:
       type: object
+      required:
+        - filepath
       properties:
-        token:
+        filepath:
           type: string
 
     Coordinates:
@@ -426,15 +505,6 @@ components:
           type: number
         longitude:
           type: number
-
-    City:
-      type: object
-      required: [name, location]
-      properties:
-        name:
-          $ref: '#/components/schemas/CityName'
-        location:
-          $ref: '#/components/schemas/Coordinates'
 
     Comment:
       type: object
