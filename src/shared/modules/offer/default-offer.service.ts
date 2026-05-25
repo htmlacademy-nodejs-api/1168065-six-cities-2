@@ -1,4 +1,5 @@
 import { inject, injectable } from 'inversify';
+import { StatusCodes } from 'http-status-codes';
 import { OfferService } from './offer-service.interface.js';
 import { City, Component, SortType } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
@@ -13,6 +14,7 @@ import {
 import { CommentEntity } from '../comment/index.js';
 import { Types } from 'mongoose';
 import { FavoriteEntity } from '../favorite/index.js';
+import { HttpError } from '../../libs/rest/index.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
@@ -147,8 +149,12 @@ export class DefaultOfferService implements OfferService {
     userId?: string,
     count?: number,
   ): Promise<OfferWithFavorite[]> {
-    if (!city) {
-      return [];
+    if (!Object.values(City).includes(city)) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'City is missing or incorrect',
+        'OfferController',
+      );
     }
 
     const premiumOffers = await this.offerModel
