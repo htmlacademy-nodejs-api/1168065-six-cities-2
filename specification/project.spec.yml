@@ -131,7 +131,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/OfferPreview'
+                  $ref: '#/components/schemas/Offer'
 
     post:
       tags: [offers]
@@ -151,10 +151,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Offer'
+        '400':
+          $ref: '#/components/responses/ValidationError'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '422':
-          $ref: '#/components/responses/ValidationError'
 
   /offers/{offerId}:
     get:
@@ -254,7 +254,9 @@ paths:
                 type: array
                 maxItems: 3
                 items:
-                  $ref: '#/components/schemas/OfferPreview'
+                  $ref: '#/components/schemas/Offer'
+        '400':
+          description: Неверно выбран город
 
   /offers/favorites:
     get:
@@ -271,7 +273,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/OfferPreview'
+                  $ref: '#/components/schemas/Offer'
         '401':
           $ref: '#/components/responses/Unauthorized'
 
@@ -285,12 +287,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/offerId'
       responses:
-        '200':
+        '204':
           description: Добавлено в избранное
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Offer'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -305,12 +303,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/offerId'
       responses:
-        '200':
+        '204':
           description: Удалено из избранного
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Offer'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -323,8 +317,6 @@ paths:
       description: Добавляет новый комментарий к предложению
       security:
         - bearerAuth: []
-      parameters:
-        - $ref: '#/components/parameters/offerId'
       requestBody:
         required: true
         content:
@@ -338,10 +330,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Comment'
+        '400':
+          $ref: '#/components/responses/ValidationError'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '422':
-          $ref: '#/components/responses/ValidationError'
 
 components:
   securitySchemes:
@@ -390,22 +382,13 @@ components:
       description: Ошибка валидации данных
 
   schemas:
-    Error:
-      type: object
-      required:
-        - error
-        - message
-        - statusCode
-      properties:
-        error:
-          type: string
-        message:
-          type: string
-        statusCode:
-          type: integer
     City:
       type: string
       enum: [Paris, Cologne, Brussels, Amsterdam, Hamburg, Dusseldorf]
+
+    Housing:
+      type: string
+      enum: [apartment, house, room, hotel]
 
     UserBase:
       type: object
@@ -413,7 +396,6 @@ components:
         - email
         - firstname
         - lastname
-        - avatarPath
         - type
       properties:
         email:
@@ -430,9 +412,6 @@ components:
           minLength: 1
           maxLength: 15
 
-        avatarPath:
-          type: string
-
         type:
           type: string
           enum: [pro, base]
@@ -440,9 +419,11 @@ components:
     User:
       allOf:
         - type: object
-          required: [id]
+          required: [id, avatarPath]
           properties:
             id:
+              type: string
+            avatarPath:
               type: string
         - $ref: '#/components/schemas/UserBase'
 
@@ -508,7 +489,7 @@ components:
 
     Comment:
       type: object
-      required: [id, text, date, rating, user]
+      required: [id, text, postDate, rating, user]
       properties:
         id:
           type: string
@@ -516,28 +497,32 @@ components:
           type: string
           minLength: 5
           maxLength: 1024
-        date:
-          type: string
-          format: date-time
         rating:
-          type: integer
+          type: number
+          format: float
           minimum: 1
           maximum: 5
+        postDate:
+          type: string
+          format: date-time
         user:
           $ref: '#/components/schemas/User'
 
     CreateComment:
       type: object
-      required: [text, rating]
+      required: [text, rating, offerId]
       properties:
         text:
           type: string
           minLength: 5
           maxLength: 1024
         rating:
-          type: integer
+          type: number
+          format: float
           minimum: 1
           maximum: 5
+        offerId:
+          type: string
 
     OfferBase:
       type: object
@@ -558,11 +543,8 @@ components:
           type: boolean
         isFavorite:
           type: boolean
-        rating:
-          type: number
         type:
-          type: string
-          enum: [apartment, house, room, hotel]
+          $ref: '#/components/schemas/Housing'
         rooms:
           type: integer
         guests:
@@ -578,8 +560,9 @@ components:
 
     Offer:
       allOf:
+        - $ref: '#/components/schemas/OfferBase'
         - type: object
-          required: [id, publishDate, host, commentsCount]
+          required: [id, publishDate, host, rating, commentsCount]
           properties:
             id:
               type: string
@@ -590,39 +573,9 @@ components:
               format: date-time
             commentsCount:
               type: integer
-        - $ref: '#/components/schemas/OfferBase'
-
-    OfferPreview:
-      allOf:
-        - type: object
-          required: [id, publishDate, commentsCount]
-          properties:
-            id:
-              type: string
-            publishDate:
-              type: string
-              format: date-time
-            commentsCount:
-              type: integer
-        - type: object
-          properties:
-            title:
-              type: string
-            type:
-              type: string
-              enum: [apartment, house, room, hotel]
-            price:
-              type: integer
-            city:
-              $ref: '#/components/schemas/City'
-            previewImage:
-              type: string
-            isPremium:
-              type: boolean
-            isFavorite:
-              type: boolean
             rating:
               type: number
+              format: float
 
     CreateOffer:
       allOf:
@@ -643,5 +596,36 @@ components:
             - location
 
     UpdateOffer:
-      allOf:
-        - $ref: '#/components/schemas/OfferBase'
+      type: object
+      additionalProperties: false
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        city:
+          $ref: '#/components/schemas/City'
+        previewImage:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        isPremium:
+          type: boolean
+        isFavorite:
+          type: boolean
+        type:
+          $ref: '#/components/schemas/Housing'
+        rooms:
+          type: integer
+        guests:
+          type: integer
+        price:
+          type: integer
+        facilities:
+          type: array
+          items:
+            type: string
+        location:
+          $ref: '#/components/schemas/Coordinates'
