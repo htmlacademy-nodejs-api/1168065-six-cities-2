@@ -14,6 +14,7 @@ import {
   HousingValues,
 } from '../../types/index.js';
 import { UserEntity } from '../user/index.js';
+import { OfferValidation } from './offer.constant.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface OfferEntity extends defaultClasses.Base {}
@@ -59,13 +60,25 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({ required: true, type: () => String, enum: HousingValues })
   public type!: Housing;
 
-  @prop({ required: true, min: 1, max: 8 })
+  @prop({
+    required: true,
+    min: OfferValidation.Rooms.Min,
+    max: OfferValidation.Rooms.Max,
+  })
   public rooms!: number;
 
-  @prop({ required: true, min: 1, max: 10 })
+  @prop({
+    required: true,
+    min: OfferValidation.Guests.Min,
+    max: OfferValidation.Guests.Max,
+  })
   public guests!: number;
 
-  @prop({ required: true, min: 100, max: 100000 })
+  @prop({
+    required: true,
+    min: OfferValidation.Price.Min,
+    max: OfferValidation.Price.Max,
+  })
   public price!: number;
 
   @prop({ required: true, type: () => [String], enum: FacilityValues })
