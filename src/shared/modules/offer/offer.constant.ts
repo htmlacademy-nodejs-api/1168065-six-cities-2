@@ -26,4 +26,14 @@ export const OfferValidation = {
   Facilities: {
     MinLength: 1,
   },
+  Location: {
+    Latitude: {
+      Min: -90,
+      Max: 90,
+    },
+    Longitude: {
+      Min: -180,
+      Max: 180,
+    },
+  },
 } as const;
