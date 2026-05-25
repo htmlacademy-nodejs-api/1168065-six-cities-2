@@ -10,28 +10,28 @@ import { OfferGenerator } from './offer-generator.interface.js';
 
 const OfferGenerationRange = {
   Price: {
-    min: 100,
-    max: 100000,
+    Min: 100,
+    Max: 100000,
   },
   Guests: {
-    min: 1,
-    max: 10,
+    Min: 1,
+    Max: 10,
   },
   Rooms: {
-    min: 1,
-    max: 8,
+    Min: 1,
+    Max: 8,
   },
   Longitude: {
-    min: 2,
-    max: 11,
+    Min: 2,
+    Max: 11,
   },
   Latitude: {
-    min: 48,
-    max: 54,
+    Min: 48,
+    Max: 54,
   },
   PublishDays: {
-    min: 1,
-    max: 7,
+    Min: 1,
+    Max: 7,
   },
 } as const;
 
@@ -44,8 +44,8 @@ export class TSVOfferGenerator implements OfferGenerator {
     const publishDate = dayjs()
       .subtract(
         generateRandomValue(
-          OfferGenerationRange.PublishDays.min,
-          OfferGenerationRange.PublishDays.max,
+          OfferGenerationRange.PublishDays.Min,
+          OfferGenerationRange.PublishDays.Max,
         ),
         'day',
       )
@@ -56,16 +56,16 @@ export class TSVOfferGenerator implements OfferGenerator {
     const isPremium = generateRandomBoolean();
     const type = getRandomItem(this.mockData.housingTypes);
     const rooms = generateRandomValue(
-      OfferGenerationRange.Rooms.min,
-      OfferGenerationRange.Rooms.max,
+      OfferGenerationRange.Rooms.Min,
+      OfferGenerationRange.Rooms.Max,
     ).toString();
     const guests = generateRandomValue(
-      OfferGenerationRange.Guests.min,
-      OfferGenerationRange.Rooms.max,
+      OfferGenerationRange.Guests.Min,
+      OfferGenerationRange.Rooms.Max,
     ).toString();
     const price = generateRandomValue(
-      OfferGenerationRange.Price.min,
-      OfferGenerationRange.Price.max,
+      OfferGenerationRange.Price.Min,
+      OfferGenerationRange.Price.Max,
     ).toString();
     const facilities = getRandomItems<string>(this.mockData.facilities).join(
       ';',
@@ -76,13 +76,13 @@ export class TSVOfferGenerator implements OfferGenerator {
     const userType = generateRandomBoolean() ? 'pro' : 'base';
     const coordinates = [
       generateRandomValue(
-        OfferGenerationRange.Latitude.min,
-        OfferGenerationRange.Latitude.max,
+        OfferGenerationRange.Latitude.Min,
+        OfferGenerationRange.Latitude.Max,
         6,
       ),
       generateRandomValue(
-        OfferGenerationRange.Longitude.min,
-        OfferGenerationRange.Longitude.max,
+        OfferGenerationRange.Longitude.Min,
+        OfferGenerationRange.Longitude.Max,
         6,
       ),
     ].join(';');
