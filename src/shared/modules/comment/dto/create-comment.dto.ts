@@ -10,8 +10,12 @@ export class CreateCommentDTO {
   public text: string;
 
   @IsInt({ message: CreateCommentMessages.rating.invalidFormat })
-  @Min(0, { message: CreateCommentMessages.rating.minValue })
-  @Max(5, { message: CreateCommentMessages.rating.maxValue })
+  @Min(CommentValidation.Rating.Min, {
+    message: CreateCommentMessages.rating.minValue,
+  })
+  @Max(CommentValidation.Rating.Max, {
+    message: CreateCommentMessages.rating.maxValue,
+  })
   public rating: number;
 
   @IsMongoId({ message: CreateCommentMessages.offerId.invalidFormat })

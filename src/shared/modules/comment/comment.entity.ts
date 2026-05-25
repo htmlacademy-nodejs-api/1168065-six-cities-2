@@ -22,7 +22,7 @@ export class CommentEntity extends defaultClasses.TimeStamps {
   @prop({ trim: true, required: true })
   public text: string;
 
-  @prop({ required: true, min: 1, max: 5, default: 0 })
+  @prop({ required: true, default: 0 })
   public rating: number;
 
   @prop({ ref: OfferEntity, required: true })

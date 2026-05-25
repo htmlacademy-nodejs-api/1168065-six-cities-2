@@ -5,7 +5,6 @@ import {
   HttpMethod,
   ValidateDtoMiddleware,
   PrivateRouteMiddleware,
-  ValidateObjectIdMiddleware,
 } from '../../libs/rest/index.js';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
@@ -52,7 +51,6 @@ export default class CommentController extends BaseController {
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CreateCommentDTO),
-        new ValidateObjectIdMiddleware('offerId'),
       ],
     });
   }
