@@ -12,6 +12,7 @@ export interface UserService {
   ): Promise<DocumentType<UserEntity>>;
   updateById(
     userId: string,
+    tokenPayloadId: string,
     dto: UpdateUserDTO,
   ): Promise<DocumentType<UserEntity> | null>;
 }

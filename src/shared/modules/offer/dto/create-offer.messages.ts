@@ -1,11 +1,13 @@
+import { OFFER_IMAGES_LENGTH, OfferValidation } from '../offer.constant.js';
+
 export const CreateOfferValidationMessage = {
   title: {
-    minLength: 'Minimum title length must be 10',
-    maxLength: 'Maximum title length must be 100',
+    minLength: `Minimum title length must be ${OfferValidation.Title.MinLength}`,
+    maxLength: `Maximum title length must be ${OfferValidation.Title.MinLength}`,
   },
   description: {
-    minLength: 'Minimum description length must be 20',
-    maxLength: 'Maximum description length must be 1024',
+    minLength: `Minimum description length must be ${OfferValidation.Description.MinLength}`,
+    maxLength: `Maximum description length must be ${OfferValidation.Description.MinLength}`,
   },
   publishDate: {
     invalidFormat: 'publishDate must be a valid ISO date',
@@ -18,7 +20,7 @@ export const CreateOfferValidationMessage = {
   },
   images: {
     invalidFormat: 'images must be an array of strings',
-    invalidLength: 'Exactly 6 images are required',
+    invalidLength: `Exactly ${OFFER_IMAGES_LENGTH} images are required`,
   },
   isPremium: {
     invalidFormat: 'isPremium must be a boolean',
@@ -28,21 +30,21 @@ export const CreateOfferValidationMessage = {
   },
   rooms: {
     invalidFormat: 'Rooms must be an integer',
-    minValue: 'Minimum rooms is 1',
-    maxValue: 'Maximum rooms is 8',
+    minValue: `Minimum rooms is ${OfferValidation.Rooms.Min}`,
+    maxValue: `Maximum rooms is ${OfferValidation.Rooms.Max}`,
   },
   guests: {
     invalidFormat: 'Guests must be an integer',
-    minValue: 'Minimum guests is 1',
-    maxValue: 'Maximum guests is 10',
+    minValue: `Minimum guests is ${OfferValidation.Guests.Min}`,
+    maxValue: `Maximum guests is ${OfferValidation.Guests.Min}`,
   },
   price: {
     invalidFormat: 'Price must be an integer',
-    minValue: 'Minimum price is 100',
-    maxValue: 'Maximum price is 100000',
+    minValue: `Minimum price is ${OfferValidation.Price.Min}`,
+    maxValue: `Maximum price is ${OfferValidation.Guests.Max}`,
   },
   facilities: {
-    invalidLength: 'At least 1 item required',
+    invalidLength: `At least ${OfferValidation.Facilities.MinLength} item required`,
     invalidFormat: 'facilities must be an array',
     invalidValue: 'facilities must contain valid Facility values',
   },
@@ -54,12 +56,12 @@ export const CreateOfferValidationMessage = {
   },
   latitude: {
     invalidFormat: 'latitude must be a number',
-    minValue: 'Minimum latitude is -90',
-    maxValue: 'Maximum latitude is 90',
+    minValue: `Minimum latitude is ${OfferValidation.Location.Latitude.Min}`,
+    maxValue: `Maximum latitude is ${OfferValidation.Location.Latitude.Max}`,
   },
   longitude: {
     invalidFormat: 'longitude must be a number',
-    minValue: 'Minimum longitude is -180',
-    maxValue: 'Maximum longitude is 180',
+    minValue: `Minimum longitude is ${OfferValidation.Location.Longitude.Min}`,
+    maxValue: `Maximum longitude is ${OfferValidation.Location.Longitude.Max}`,
   },
 } as const;

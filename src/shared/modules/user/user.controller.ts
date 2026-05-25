@@ -7,6 +7,7 @@ import {
   HttpError,
   HttpMethod,
   MAX_SINGLE_FILE_SIZE,
+  PrivateRouteMiddleware,
   UploadFileMiddleware,
   ValidateDtoMiddleware,
   ValidateObjectIdMiddleware,
@@ -36,38 +37,8 @@ export class UserController extends BaseController {
     @inject(Component.AuthService) private readonly authService: AuthService,
   ) {
     super(logger);
-    this.logger.info('Register routes for UserController...');
-    this.addRoute({
-      path: '/register',
-      method: HttpMethod.Post,
-      handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateUserDto)],
-    });
-    this.addRoute({
-      path: '/login',
-      method: HttpMethod.Post,
-      handler: this.login,
-      middlewares: [new ValidateDtoMiddleware(LoginUserDto)],
-    });
-    this.addRoute({
-      path: '/login',
-      method: HttpMethod.Get,
-      handler: this.checkAuth,
-    });
-    this.addRoute({
-      path: '/:userId/avatar',
-      method: HttpMethod.Post,
-      handler: this.uploadAvatar,
-      middlewares: [
-        new ValidateObjectIdMiddleware('userId'),
-        new UploadFileMiddleware(
-          this.configService.get('UPLOAD_DIRECTORY'),
-          'avatar',
-          ALLOWED_IMAGES,
-          MAX_SINGLE_FILE_SIZE,
-        ),
-      ],
-    });
+
+    this.registerRoutes();
   }
 
   public async create(
@@ -99,12 +70,15 @@ export class UserController extends BaseController {
   }
 
   public async uploadAvatar(
-    { params, file }: Request<ParamUserId>,
+    { params, file, tokenPayload }: Request<ParamUserId>,
     res: Response,
   ) {
     const { userId } = params;
+    const currentUserId = tokenPayload?.id;
     const uploadFile = { avatarPath: file?.filename };
-    await this.userService.updateById(userId, uploadFile);
+
+    await this.userService.updateById(userId, currentUserId, uploadFile);
+
     this.created(
       res,
       fillDTO(UploadUserAvatarRdo, { filepath: uploadFile.avatarPath }),
@@ -123,5 +97,42 @@ export class UserController extends BaseController {
     }
 
     this.ok(res, fillDTO(LoggedUserRdo, user));
+  }
+
+  private registerRoutes(): void {
+    this.logger.info('Register routes for UserController...');
+    this.addRoute({
+      path: '/register',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateUserDto)],
+    });
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Post,
+      handler: this.login,
+      middlewares: [new ValidateDtoMiddleware(LoginUserDto)],
+    });
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Get,
+      handler: this.checkAuth,
+      middlewares: [new PrivateRouteMiddleware()],
+    });
+    this.addRoute({
+      path: '/:userId/avatar',
+      method: HttpMethod.Post,
+      handler: this.uploadAvatar,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('userId'),
+        new UploadFileMiddleware(
+          this.configService.get('UPLOAD_DIRECTORY'),
+          'avatar',
+          ALLOWED_IMAGES,
+          MAX_SINGLE_FILE_SIZE,
+        ),
+      ],
+    });
   }
 }

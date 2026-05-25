@@ -16,6 +16,7 @@
     "compile": "tsc -p tsconfig.json",
     "clean": "rimraf dist",
     "ts": "node --loader ts-node/esm",
+    "cli": "npm run build && node ./dist/main.cli.js",
     "mock:server": "json-server ./mocks/mock-server-data.json --port 3123"
   },
   "devDependencies": {

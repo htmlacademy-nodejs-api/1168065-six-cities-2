@@ -1,4 +1,5 @@
 import { inject, injectable } from 'inversify';
+import { StatusCodes } from 'http-status-codes';
 import { OfferService } from './offer-service.interface.js';
 import { City, Component, SortType } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
@@ -13,6 +14,7 @@ import {
 import { CommentEntity } from '../comment/index.js';
 import { Types } from 'mongoose';
 import { FavoriteEntity } from '../favorite/index.js';
+import { HttpError } from '../../libs/rest/index.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
@@ -70,36 +72,39 @@ export class DefaultOfferService implements OfferService {
   ): Promise<OfferWithFavorite[]> {
     const offers = await this.offerModel
       .find()
+      .sort({ createdAt: SortType.Down })
       .limit(count ?? DEFAULT_OFFER_COUNT)
       .populate(['userId'])
       .lean();
 
     if (!userId) {
-      return offers.map((offer) => ({ ...offer, isFavorite: false }));
+      return offers.map((offer) => ({
+        ...offer,
+        isFavorite: false,
+      }));
     }
 
-    const favoriteIds = await this.favoriteModel.distinct('offerId', {
-      userId,
-    });
+    const favoriteIds = await this.getFavoriteIds(userId);
 
-    const set = new Set(favoriteIds.map(String));
-
-    return offers.map((offer) => ({
-      ...offer,
-      isFavorite: set.has(offer._id.toString()),
-    }));
+    return this.addFavoriteFlag(offers, favoriteIds);
   }
 
   public async deleteById(
     offerId: string,
+    userId: string,
   ): Promise<types.DocumentType<OfferEntity> | null> {
+    await this.checkOwner(offerId, userId);
+
     return this.offerModel.findByIdAndDelete(offerId).exec();
   }
 
   public async updateById(
     offerId: string,
+    userId: string,
     dto: UpdateOfferDTO,
   ): Promise<types.DocumentType<OfferEntity> | null> {
+    await this.checkOwner(offerId, userId);
+
     return this.offerModel
       .findByIdAndUpdate(offerId, dto, { new: true })
       .exec();
@@ -115,7 +120,7 @@ export class DefaultOfferService implements OfferService {
     return this.offerModel
       .findByIdAndUpdate(offerId, {
         $inc: {
-          commentCount: 1,
+          commentsCount: 1,
         },
       })
       .exec();
@@ -151,8 +156,12 @@ export class DefaultOfferService implements OfferService {
     userId?: string,
     count?: number,
   ): Promise<OfferWithFavorite[]> {
-    if (!city) {
-      return [];
+    if (!Object.values(City).includes(city)) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'City is missing or incorrect',
+        'OfferController',
+      );
     }
 
     const premiumOffers = await this.offerModel
@@ -164,18 +173,48 @@ export class DefaultOfferService implements OfferService {
       .exec();
 
     if (!userId) {
-      return premiumOffers.map((offer) => ({ ...offer, isFavorite: false }));
+      return premiumOffers.map((offer) => ({
+        ...offer,
+        isFavorite: false,
+      }));
     }
 
+    const favoriteIds = await this.getFavoriteIds(userId);
+
+    return this.addFavoriteFlag(premiumOffers, favoriteIds);
+  }
+
+  private async getFavoriteIds(userId: string): Promise<Set<string>> {
     const favoriteIds = await this.favoriteModel.distinct('offerId', {
       userId,
     });
 
-    const set = new Set(favoriteIds.map(String));
+    return new Set(favoriteIds.map(String));
+  }
 
-    return premiumOffers.map((offer) => ({
+  private addFavoriteFlag(
+    offers: OfferEntity[],
+    favoriteIds: Set<string>,
+  ): OfferWithFavorite[] {
+    return offers.map((offer) => ({
       ...offer,
-      isFavorite: set.has(offer._id.toString()),
+      isFavorite: favoriteIds.has(offer._id.toString()),
     }));
+  }
+
+  private async checkOwner(offerId: string, userId: string): Promise<void> {
+    const offer = await this.offerModel.findById(offerId);
+
+    if (!offer) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        'Offer not found',
+        'OfferService',
+      );
+    }
+
+    if (offer.userId.toString() !== userId) {
+      throw new HttpError(StatusCodes.FORBIDDEN, 'Forbidden', 'OfferService');
+    }
   }
 }

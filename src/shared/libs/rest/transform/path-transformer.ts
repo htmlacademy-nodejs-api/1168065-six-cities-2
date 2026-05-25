@@ -9,7 +9,7 @@ import {
 import { getFullServerPath } from '../../../helpers/index.js';
 import { STATIC_FILES_ROUTE, STATIC_UPLOAD_ROUTE } from '../rest.constant.js';
 
-function isObject(value: unknown): value is Record<string, object> {
+function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
@@ -30,18 +30,33 @@ export class PathTransformer {
     return STATIC_RESOURCE_FIELDS.includes(property);
   }
 
-  public execute(data: Record<string, unknown>): Record<string, unknown> {
-    const stack = [data];
+  public execute<T>(data: T): T {
+    if (!isObject(data)) {
+      return data;
+    }
+
+    const stack: Record<string, unknown>[] = [data];
+    const visited = new WeakSet<object>();
+
+    visited.add(data);
 
     while (stack.length > 0) {
       const current = stack.pop();
+
+      if (!current) {
+        continue;
+      }
 
       for (const key in current) {
         if (Object.hasOwn(current, key)) {
           const value = current[key];
 
           if (isObject(value)) {
-            stack.push(value);
+            if (!visited.has(value)) {
+              visited.add(value);
+              stack.push(value);
+            }
+
             continue;
           }
 
@@ -54,6 +69,7 @@ export class PathTransformer {
             const rootPath = this.hasDefaultImage(value)
               ? staticPath
               : uploadPath;
+
             current[key] =
               `${getFullServerPath(serverHost, serverPort)}${rootPath}/${value}`;
           }

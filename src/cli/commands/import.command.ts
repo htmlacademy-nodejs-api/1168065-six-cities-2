@@ -22,9 +22,13 @@ import {
 } from '../../shared/libs/database-client/index.js';
 import { ConsoleLogger, Logger } from '../../shared/libs/logger/index.js';
 import { Offer } from '../../shared/types/index.js';
-import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.constant.js';
 import { CommentModel } from '../../shared/modules/comment/index.js';
 import { FavoriteModel } from '../../shared/modules/favorite/index.js';
+import {
+  Config,
+  RestConfig,
+  RestSchema,
+} from '../../shared/libs/config/index.js';
 
 export class ImportCommand implements Command {
   private userService: UserService;
@@ -32,6 +36,7 @@ export class ImportCommand implements Command {
   private databaseClient: DatabaseClient;
   private logger: Logger;
   private salt: string;
+  private config: Config<RestSchema>;
 
   constructor() {
     this.onImportedLine = this.onImportedLine.bind(this);
@@ -46,6 +51,7 @@ export class ImportCommand implements Command {
     );
     this.userService = new DefaultUserService(this.logger, UserModel);
     this.databaseClient = new MongoDatabaseClient(this.logger);
+    this.config = new RestConfig(this.logger);
   }
 
   public getName(): string {
@@ -54,7 +60,7 @@ export class ImportCommand implements Command {
 
   private async saveOffer(offer: Offer) {
     const user = await this.userService.findOrCreate(
-      { ...offer.host, password: DEFAULT_USER_PASSWORD },
+      { ...offer.host, password: this.config.get('DEFAULT_USER_PASSWORD') },
       this.salt,
     );
 
@@ -97,7 +103,13 @@ export class ImportCommand implements Command {
   ): Promise<void> {
     this.logger.info('Starting import...');
 
-    const uri = getMongoURI(login, password, host, DEFAULT_DB_PORT, dbname);
+    const uri = getMongoURI(
+      login,
+      password,
+      host,
+      this.config.get('DB_PORT'),
+      dbname,
+    );
     this.salt = salt;
 
     await this.databaseClient.connect(uri);

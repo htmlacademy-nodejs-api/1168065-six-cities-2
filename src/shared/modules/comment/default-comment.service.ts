@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { CommentService } from './comment-service.interface.js';
-import { Component } from '../../types/index.js';
+import { Component, SortType } from '../../types/index.js';
 import { DocumentType, types } from '@typegoose/typegoose';
 import { CommentEntity } from './comment.entity.js';
 import { CreateCommentDTO } from './dto/create-comment.dto.js';
@@ -21,8 +21,18 @@ export class DefaultCommentService implements CommentService {
 
   public async findByOfferId(
     offerId: string,
+    count?: number,
   ): Promise<DocumentType<CommentEntity>[]> {
-    return this.commentModel.find({ offerId }).populate('userId');
+    const query = this.commentModel
+      .find({ offerId })
+      .sort({ createdAt: SortType.Down })
+      .populate('userId');
+
+    if (count) {
+      query.limit(count);
+    }
+
+    return query.exec();
   }
 
   public async deleteByOfferId(offerId: string): Promise<number | null> {
