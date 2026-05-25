@@ -28,7 +28,10 @@ import { CommentRdo, CommentService } from '../comment/index.js';
 import { CreateOfferDTO } from './dto/create-offer.dto.js';
 import { FavoriteService } from '../favorite/index.js';
 import { Config, RestSchema } from '../../libs/config/index.js';
-import { OFFER_IMAGES_LENGTH } from './offer.constant.js';
+import {
+  DEFAULT_COMMENTS_COUNT,
+  OFFER_IMAGES_LENGTH,
+} from './offer.constant.js';
 import { UploadImagesRdo } from './rdo/upload-images.rdo.js';
 import { UploadPreviewRdo } from './rdo/upload-preview.rdo.js';
 
@@ -127,7 +130,10 @@ export class OfferController extends BaseController {
     res: Response,
   ): Promise<void> {
     const { offerId } = params;
-    const comments = await this.commentService.findByOfferId(offerId);
+    const comments = await this.commentService.findByOfferId(
+      offerId,
+      DEFAULT_COMMENTS_COUNT,
+    );
     this.ok(res, fillDTO(CommentRdo, comments));
   }
 

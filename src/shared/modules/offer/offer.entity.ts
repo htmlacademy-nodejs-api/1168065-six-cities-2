@@ -54,7 +54,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   public rating!: number;
 
   @prop({ default: 0 })
-  public commentCount!: number;
+  public commentsCount!: number;
 
   @prop({ required: true, type: () => String, enum: HousingValues })
   public type!: Housing;

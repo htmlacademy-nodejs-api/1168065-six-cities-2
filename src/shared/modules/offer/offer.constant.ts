@@ -1,6 +1,7 @@
 export const DEFAULT_OFFER_COUNT = 60;
 export const DEFAULT_PREMIUM_OFFER_COUNT = 3;
 export const OFFER_IMAGES_LENGTH = 6;
+export const DEFAULT_COMMENTS_COUNT = 50;
 
 export const OfferValidation = {
   Title: {

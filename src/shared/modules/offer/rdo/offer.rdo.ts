@@ -39,6 +39,9 @@ export class OfferRdo {
   public rating: number;
 
   @Expose()
+  public commentsCount: number;
+
+  @Expose()
   public type: Housing;
 
   @Expose()
