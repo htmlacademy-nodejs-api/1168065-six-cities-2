@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import { ExceptionFilter } from './exception-filter.interface.js';
 import { Component } from '../../../types/index.js';
@@ -30,7 +29,7 @@ export class HttpErrorExceptionFilter implements ExceptionFilter {
     );
 
     res
-      .status(StatusCodes.BAD_REQUEST)
+      .status(error.httpStatusCode)
       .json(createErrorObject(ApplicationError.CommonError, error.message));
   }
 }

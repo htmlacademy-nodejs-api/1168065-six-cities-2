@@ -26,18 +26,23 @@ import {
 } from '../../../types/index.js';
 import { CoordinatesDto } from './coordinates.dto.js';
 import { CreateUpdateOfferMessage } from './update-offer.messages.js';
+import { OFFER_IMAGES_LENGTH, OfferValidation } from '../offer.constant.js';
 
 export class UpdateOfferDTO {
   @IsOptional()
-  @MinLength(10, { message: CreateUpdateOfferMessage.title.minLength })
-  @MaxLength(100, { message: CreateUpdateOfferMessage.title.maxLength })
+  @MinLength(OfferValidation.Title.MinLength, {
+    message: CreateUpdateOfferMessage.title.minLength,
+  })
+  @MaxLength(OfferValidation.Title.MaxLength, {
+    message: CreateUpdateOfferMessage.title.maxLength,
+  })
   public title?: string;
 
   @IsOptional()
-  @MinLength(20, {
+  @MinLength(OfferValidation.Description.MinLength, {
     message: CreateUpdateOfferMessage.description.minLength,
   })
-  @MaxLength(1024, {
+  @MaxLength(OfferValidation.Description.MaxLength, {
     message: CreateUpdateOfferMessage.description.maxLength,
   })
   public description?: string;
@@ -59,10 +64,10 @@ export class UpdateOfferDTO {
 
   @IsOptional()
   @IsArray({ message: CreateUpdateOfferMessage.images.invalidFormat })
-  @ArrayMinSize(6, {
+  @ArrayMinSize(OFFER_IMAGES_LENGTH, {
     message: CreateUpdateOfferMessage.images.invalidLength,
   })
-  @ArrayMaxSize(6, {
+  @ArrayMaxSize(OFFER_IMAGES_LENGTH, {
     message: CreateUpdateOfferMessage.images.invalidLength,
   })
   public images?: string[];
@@ -77,25 +82,37 @@ export class UpdateOfferDTO {
 
   @IsOptional()
   @IsInt({ message: CreateUpdateOfferMessage.rooms.invalidFormat })
-  @Min(1, { message: CreateUpdateOfferMessage.rooms.minValue })
-  @Max(8, { message: CreateUpdateOfferMessage.rooms.maxValue })
+  @Min(OfferValidation.Rooms.Min, {
+    message: CreateUpdateOfferMessage.rooms.minValue,
+  })
+  @Max(OfferValidation.Rooms.Max, {
+    message: CreateUpdateOfferMessage.rooms.maxValue,
+  })
   public rooms?: number;
 
   @IsOptional()
   @IsInt({ message: CreateUpdateOfferMessage.guests.invalidFormat })
-  @Min(1, { message: CreateUpdateOfferMessage.guests.minValue })
-  @Max(10, { message: CreateUpdateOfferMessage.guests.maxValue })
+  @Min(OfferValidation.Guests.Min, {
+    message: CreateUpdateOfferMessage.guests.minValue,
+  })
+  @Max(OfferValidation.Guests.Max, {
+    message: CreateUpdateOfferMessage.guests.maxValue,
+  })
   public guests?: number;
 
   @IsOptional()
   @IsInt({ message: CreateUpdateOfferMessage.price.invalidFormat })
-  @Min(100, { message: CreateUpdateOfferMessage.price.minValue })
-  @Max(100000, { message: CreateUpdateOfferMessage.price.maxValue })
+  @Min(OfferValidation.Price.Min, {
+    message: CreateUpdateOfferMessage.price.minValue,
+  })
+  @Max(OfferValidation.Price.Max, {
+    message: CreateUpdateOfferMessage.price.maxValue,
+  })
   public price?: number;
 
   @IsOptional()
   @IsArray({ message: CreateUpdateOfferMessage.facilities.invalidFormat })
-  @ArrayMinSize(1, {
+  @ArrayMinSize(OfferValidation.Facilities.MinLength, {
     message: CreateUpdateOfferMessage.facilities.invalidLength,
   })
   @IsIn(FacilityValues, {

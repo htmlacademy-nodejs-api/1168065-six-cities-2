@@ -43,12 +43,18 @@ export class ParseTokenMiddleware implements Middleware {
         createSecretKey(this.jwtSecret, 'utf-8'),
       );
 
-      if (isTokenPayload(payload)) {
-        req.tokenPayload = { ...payload };
-        return next();
-      } else {
-        throw new Error('Bad token');
+      if (!isTokenPayload(payload)) {
+        return next(
+          new HttpError(
+            StatusCodes.UNAUTHORIZED,
+            'Invalid token payload',
+            'AuthenticateMiddleware',
+          ),
+        );
       }
+
+      req.tokenPayload = { ...payload };
+      return next();
     } catch {
       return next(
         new HttpError(

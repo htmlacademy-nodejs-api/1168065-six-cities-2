@@ -5,7 +5,6 @@ import {
   HttpMethod,
   ValidateDtoMiddleware,
   PrivateRouteMiddleware,
-  ValidateObjectIdMiddleware,
 } from '../../libs/rest/index.js';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
@@ -26,17 +25,7 @@ export default class CommentController extends BaseController {
   ) {
     super(logger);
 
-    this.logger.info('Register routes for CommentController...');
-    this.addRoute({
-      path: '/',
-      method: HttpMethod.Post,
-      handler: this.create,
-      middlewares: [
-        new PrivateRouteMiddleware(),
-        new ValidateDtoMiddleware(CreateCommentDTO),
-        new ValidateObjectIdMiddleware('offerId'),
-      ],
-    });
+    this.registerRoutes();
   }
 
   public async create(
@@ -51,5 +40,18 @@ export default class CommentController extends BaseController {
     await this.offerService.incCommentCount(offerId);
     await this.offerService.calcRating(offerId);
     this.created(res, fillDTO(CommentRdo, comment));
+  }
+
+  private registerRoutes(): void {
+    this.logger.info('Register routes for CommentController...');
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(CreateCommentDTO),
+      ],
+    });
   }
 }

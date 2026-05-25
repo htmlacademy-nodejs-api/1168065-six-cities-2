@@ -8,9 +8,13 @@ export interface OfferService extends DocumentExists {
   create(dto: CreateOfferDTO): Promise<DocumentType<OfferEntity>>;
   findById(offerId: string, userId?: string): Promise<OfferWithFavorite | null>;
   find(count?: number, userId?: string): Promise<OfferWithFavorite[]>;
-  deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
+  deleteById(
+    offerId: string,
+    userId: string,
+  ): Promise<DocumentType<OfferEntity> | null>;
   updateById(
     offerId: string,
+    userId: string,
     dto: UpdateOfferDTO,
   ): Promise<DocumentType<OfferEntity> | null>;
   incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null>;

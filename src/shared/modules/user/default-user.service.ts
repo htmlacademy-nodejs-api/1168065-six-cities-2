@@ -7,6 +7,8 @@ import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { UpdateUserDTO } from './dto/update-user.dto.js';
 import { DEFAULT_AVATAR_FILE_NAME } from './user.constant.js';
+import { HttpError } from '../../libs/rest/index.js';
+import { StatusCodes } from 'http-status-codes';
 
 @injectable()
 export class DefaultUserService implements UserService {
@@ -53,8 +55,13 @@ export class DefaultUserService implements UserService {
 
   public async updateById(
     userId: string,
+    tokenPayloadId: string,
     dto: UpdateUserDTO,
   ): Promise<DocumentType<UserEntity> | null> {
+    if (userId !== tokenPayloadId) {
+      throw new HttpError(StatusCodes.FORBIDDEN, 'Forbidden', 'UserService');
+    }
+
     return this.userModel.findByIdAndUpdate(userId, dto, { new: true }).exec();
   }
 }

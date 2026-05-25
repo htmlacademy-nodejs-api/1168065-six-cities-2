@@ -1,7 +1,4 @@
-import {
-  createStringUnionGuard,
-  createStringUnionParser,
-} from '../helpers/index.js';
+import { createStringUnionParser } from '../helpers/index.js';
 
 export const FacilityValues = [
   'Breakfast',
@@ -14,7 +11,5 @@ export const FacilityValues = [
 ] as const;
 
 export type Facility = (typeof FacilityValues)[number];
-
-export const isFacility = createStringUnionGuard(FacilityValues);
 
 export const parseFacility = createStringUnionParser(FacilityValues);
