@@ -1,7 +1,9 @@
+import { CommentValidation } from '../comment.constant.js';
+
 export const CreateCommentMessages = {
   text: {
     invalidFormat: 'text is required',
-    lengthField: 'min length is 5, max is 2024',
+    lengthField: `min length is ${CommentValidation.Text.MinLength}, max is ${CommentValidation.Text.MaxLength}`,
   },
   offerId: {
     invalidFormat: 'offerId field must be a valid id',
@@ -11,7 +13,7 @@ export const CreateCommentMessages = {
   },
   rating: {
     invalidFormat: 'rating must be an integer',
-    minValue: 'Minimum rating is 0',
-    maxValue: 'Maximum rating is 5',
+    minValue: `Minimum rating is ${CommentValidation.Rating.Min}`,
+    maxValue: `Maximum rating is ${CommentValidation.Rating.Min}`,
   },
 } as const;

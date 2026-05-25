@@ -1,9 +1,12 @@
 import { IsInt, IsMongoId, IsString, Length, Max, Min } from 'class-validator';
 import { CreateCommentMessages } from './create-comment.messages.js';
+import { CommentValidation } from '../comment.constant.js';
 
 export class CreateCommentDTO {
   @IsString({ message: CreateCommentMessages.text.invalidFormat })
-  @Length(5, 1024, { message: 'min is 5, max is 1024 ' })
+  @Length(CommentValidation.Text.MinLength, CommentValidation.Text.MaxLength, {
+    message: CreateCommentMessages.text.lengthField,
+  })
   public text: string;
 
   @IsInt({ message: CreateCommentMessages.rating.invalidFormat })
