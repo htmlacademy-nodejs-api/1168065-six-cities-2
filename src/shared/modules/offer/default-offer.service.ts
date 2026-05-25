@@ -91,14 +91,20 @@ export class DefaultOfferService implements OfferService {
 
   public async deleteById(
     offerId: string,
+    userId: string,
   ): Promise<types.DocumentType<OfferEntity> | null> {
+    await this.checkOwner(offerId, userId);
+
     return this.offerModel.findByIdAndDelete(offerId).exec();
   }
 
   public async updateById(
     offerId: string,
+    userId: string,
     dto: UpdateOfferDTO,
   ): Promise<types.DocumentType<OfferEntity> | null> {
+    await this.checkOwner(offerId, userId);
+
     return this.offerModel
       .findByIdAndUpdate(offerId, dto, { new: true })
       .exec();
@@ -194,5 +200,21 @@ export class DefaultOfferService implements OfferService {
       ...offer,
       isFavorite: favoriteIds.has(offer._id.toString()),
     }));
+  }
+
+  private async checkOwner(offerId: string, userId: string): Promise<void> {
+    const offer = await this.offerModel.findById(offerId);
+
+    if (!offer) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        'Offer not found',
+        'OfferService',
+      );
+    }
+
+    if (offer.userId.toString() !== userId) {
+      throw new HttpError(StatusCodes.FORBIDDEN, 'Forbidden', 'OfferService');
+    }
   }
 }

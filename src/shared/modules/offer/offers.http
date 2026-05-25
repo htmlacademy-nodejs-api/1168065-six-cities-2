@@ -52,15 +52,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZ
 ###
 
 ## Удалить объявление по идентификатору
-DELETE http://localhost:3000/offers/6a135a60cf8b052690407eaa HTTP/1.1
+DELETE http://localhost:3000/offers/6a13635c0df9cd8bf6105552 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNmExMzY5MTQwMjUxZGFhZGFlZTVlMTM2IiwiaWF0IjoxNzc5NjU2OTg4LCJleHAiOjE3Nzk4Mjk3ODh9.x5fodXNwaoXr9sWf5MrWDOcqPw11srZt8cbTZlW8E8g
 
 ###
 
 ## Обновить объявление
 
-PATCH http://localhost:3000/offers/69c98315edbb02aef834bfd1 HTTP/1.1
+PATCH http://localhost:3000/offers/6a13635c0df9cd8bf6105552 HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNmExMzY5MTQwMjUxZGFhZGFlZTVlMTM2IiwiaWF0IjoxNzc5NjU2OTg4LCJleHAiOjE3Nzk4Mjk3ODh9.x5fodXNwaoXr9sWf5MrWDOcqPw11srZt8cbTZlW8E8g
 
 {
   "isPremium": true,
