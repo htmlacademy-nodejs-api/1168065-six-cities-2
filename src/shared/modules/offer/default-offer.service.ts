@@ -72,7 +72,7 @@ export class DefaultOfferService implements OfferService {
   ): Promise<OfferWithFavorite[]> {
     const offers = await this.offerModel
       .find()
-      .sort({ createdAt: SortType.Down })
+      .sort({ publishDate: SortType.Down })
       .limit(count ?? DEFAULT_OFFER_COUNT)
       .populate(['userId'])
       .lean();
@@ -166,7 +166,7 @@ export class DefaultOfferService implements OfferService {
 
     const premiumOffers = await this.offerModel
       .find({ city, isPremium: true })
-      .sort({ createdAt: SortType.Down })
+      .sort({ publishDate: SortType.Down })
       .limit(count ?? DEFAULT_PREMIUM_OFFER_COUNT)
       .populate(['userId'])
       .lean()
