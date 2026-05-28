@@ -3,7 +3,7 @@
 
 POST http://localhost:3000/comments HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNmExNDc1ZDVlOGRmN2MwNDEyNTMwYTgyIiwiaWF0IjoxNzc5NzI1Nzg3LCJleHAiOjE3Nzk4OTg1ODd9.hFl1pYW4ARmBGxkFB4JuxP48xWCg4GI80RUqDCbyX_w
+Authorization: Bearer {token}
 
 {
   "text": "Great 2!",
