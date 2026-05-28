@@ -35,8 +35,8 @@ export class ImportCommand implements Command {
   private offerService: OfferService;
   private databaseClient: DatabaseClient;
   private logger: Logger;
-  private salt: string;
-  private config: Config<RestSchema>;
+  private salt!: string;
+  private config!: Config<RestSchema>;
 
   constructor() {
     this.onImportedLine = this.onImportedLine.bind(this);
@@ -51,7 +51,6 @@ export class ImportCommand implements Command {
     );
     this.userService = new DefaultUserService(this.logger, UserModel);
     this.databaseClient = new MongoDatabaseClient(this.logger);
-    this.config = new RestConfig(this.logger);
   }
 
   public getName(): string {
@@ -102,6 +101,7 @@ export class ImportCommand implements Command {
     salt: string,
   ): Promise<void> {
     this.logger.info('Starting import...');
+    this.config = new RestConfig(this.logger);
 
     const uri = getMongoURI(
       login,

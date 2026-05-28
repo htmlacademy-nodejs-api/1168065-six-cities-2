@@ -30,6 +30,7 @@ import { FavoriteService } from '../favorite/index.js';
 import { Config, RestSchema } from '../../libs/config/index.js';
 import {
   DEFAULT_COMMENTS_COUNT,
+  DEFAULT_PREMIUM_OFFER_COUNT,
   OFFER_IMAGES_LENGTH,
 } from './offer.constant.js';
 import { UploadImagesRdo } from './rdo/upload-images.rdo.js';
@@ -146,7 +147,6 @@ export class OfferController extends BaseController {
   ): Promise<void> {
     const city = String(query.city).trim() as City;
     const userId = tokenPayload?.id;
-    const limit = query.limit && Number(query.limit);
 
     if (!city) {
       throw new HttpError(
@@ -159,7 +159,7 @@ export class OfferController extends BaseController {
     const premiumOffersByCity = await this.offerService.findPremiumByCity(
       city,
       userId,
-      limit,
+      DEFAULT_PREMIUM_OFFER_COUNT,
     );
     this.ok(res, fillDTO(OfferRdo, premiumOffersByCity));
   }

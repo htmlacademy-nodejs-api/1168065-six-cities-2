@@ -17,12 +17,11 @@ export interface OfferService extends DocumentExists {
     userId: string,
     dto: UpdateOfferDTO,
   ): Promise<DocumentType<OfferEntity> | null>;
-  incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   findPremiumByCity(
     city: City,
     userId?: string,
     count?: number,
   ): Promise<OfferWithFavorite[]>;
-  calcRating(offerId: string): Promise<void>;
   exists(documentId: string): Promise<boolean>;
+  updateAfterCommentCreated(offerId: string): Promise<void>;
 }
