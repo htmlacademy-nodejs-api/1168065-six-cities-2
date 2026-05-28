@@ -23,7 +23,7 @@ export type RestSchema = {
   DB_HOST: string;
   DB_USER: string;
   DB_PASSWORD: string;
-  DB_PORT: string;
+  DB_PORT: number;
   DB_NAME: string;
   UPLOAD_DIRECTORY: string;
   JWT_SECRET: string;
@@ -37,7 +37,7 @@ export const configRestSchema = convict<RestSchema>({
     doc: 'Port for incoming connections',
     format: 'port',
     env: 'PORT',
-    default: 4000,
+    default: null,
   },
   SALT: {
     doc: 'Salt for password hash',
@@ -49,7 +49,7 @@ export const configRestSchema = convict<RestSchema>({
     doc: 'IP address of the database server (MongoDB)',
     format: 'ip-or-localhost',
     env: 'DB_HOST',
-    default: '127.0.0.1',
+    default: null,
   },
   DB_USER: {
     doc: 'Username to connect to the database',
@@ -67,13 +67,13 @@ export const configRestSchema = convict<RestSchema>({
     doc: 'Port to connect to the database (MongoDB)',
     format: 'port',
     env: 'DB_PORT',
-    default: '27017',
+    default: null,
   },
   DB_NAME: {
     doc: 'Database name (MongoDB)',
     format: String,
     env: 'DB_NAME',
-    default: 'six-cities-2',
+    default: null,
   },
   UPLOAD_DIRECTORY: {
     doc: 'Directory for uploaded files',
@@ -91,18 +91,18 @@ export const configRestSchema = convict<RestSchema>({
     doc: 'Host where service started',
     format: String,
     env: 'HOST',
-    default: 'localhost',
+    default: null,
   },
   STATIC_DIRECTORY_PATH: {
     doc: 'Path to directory with static resources',
     format: String,
     env: 'STATIC_DIRECTORY_PATH',
-    default: 'static',
+    default: null,
   },
   DEFAULT_USER_PASSWORD: {
     doc: 'Default user password for import',
     format: String,
     env: 'DEFAULT_USER_PASSWORD',
-    default: 'password',
+    default: null,
   },
 });
