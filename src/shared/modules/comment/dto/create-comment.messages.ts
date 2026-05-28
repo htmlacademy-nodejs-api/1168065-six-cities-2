@@ -14,6 +14,6 @@ export const CreateCommentMessages = {
   rating: {
     invalidFormat: 'rating must be an integer',
     minValue: `Minimum rating is ${CommentValidation.Rating.Min}`,
-    maxValue: `Maximum rating is ${CommentValidation.Rating.Min}`,
+    maxValue: `Maximum rating is ${CommentValidation.Rating.Max}`,
   },
 } as const;

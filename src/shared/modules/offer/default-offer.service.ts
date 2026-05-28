@@ -72,7 +72,7 @@ export class DefaultOfferService implements OfferService {
   ): Promise<OfferWithFavorite[]> {
     const offers = await this.offerModel
       .find()
-      .sort({ createdAt: SortType.Down })
+      .sort({ publishDate: SortType.Down })
       .limit(count ?? DEFAULT_OFFER_COUNT)
       .populate(['userId'])
       .lean();
@@ -114,7 +114,14 @@ export class DefaultOfferService implements OfferService {
     return (await this.offerModel.exists({ _id: documentId })) !== null;
   }
 
-  public async incCommentCount(
+  public async updateAfterCommentCreated(offerId: string): Promise<void> {
+    await Promise.all([
+      this.incCommentCount(offerId),
+      this.calcRating(offerId),
+    ]);
+  }
+
+  private async incCommentCount(
     offerId: string,
   ): Promise<types.DocumentType<OfferEntity> | null> {
     return this.offerModel
@@ -126,7 +133,7 @@ export class DefaultOfferService implements OfferService {
       .exec();
   }
 
-  public async calcRating(offerId: string): Promise<void> {
+  private async calcRating(offerId: string): Promise<void> {
     const ratings = await this.commentModel.aggregate([
       { $match: { offerId: new Types.ObjectId(offerId) } },
       { $group: { _id: '$offerId', avgRating: { $avg: '$rating' } } },
@@ -166,7 +173,7 @@ export class DefaultOfferService implements OfferService {
 
     const premiumOffers = await this.offerModel
       .find({ city, isPremium: true })
-      .sort({ createdAt: SortType.Down })
+      .sort({ publishDate: SortType.Down })
       .limit(count ?? DEFAULT_PREMIUM_OFFER_COUNT)
       .populate(['userId'])
       .lean()

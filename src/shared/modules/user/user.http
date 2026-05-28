@@ -1,3 +1,6 @@
+@token =
+@userId =
+
 # Пользователи
 ## Создать нового пользователя
 
@@ -29,15 +32,15 @@ Content-Type: application/json
 
 ## Отправить изображение
 
-POST http://localhost:3000/users/6a1475d5e8df7c0412530a82/avatar HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNmExNDc1ZDVlOGRmN2MwNDEyNTMwYTgyIiwiaWF0IjoxNzc5NzMxODcwLCJleHAiOjE3Nzk5MDQ2NzB9.U9V1c9hjgC5d-jEpPUgNqor3qDItgrp9pq_svWrgezk
+POST http://localhost:3000/users/{{userId}}/avatar HTTP/1.1
+Authorization: Bearer {{token}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="avatar"; filename="1491560029191039414.jpg"
 Content-Type: image/png
 
-< "F:\Unsorted\1491560029191039414.jpg"
+< "path/to/image"
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ##
@@ -46,6 +49,6 @@ Content-Type: image/png
 
 ## Проверить токен пользователя
 GET http://localhost:3000/users/login HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJmaXJzdG5hbWUiOiJKYWNrIiwibGFzdG5hbWUiOiJUb3JyYW5jZSIsImlkIjoiNmExNDc1ZDVlOGRmN2MwNDEyNTMwYTgyIiwiaWF0IjoxNzc5NzMxODcwLCJleHAiOjE3Nzk5MDQ2NzB9.U9V1c9hjgC5d-jEpPUgNqor3qDItgrp9pq_svWrgezk
+Authorization: Bearer {{token}}
 
 ###

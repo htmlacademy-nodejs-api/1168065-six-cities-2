@@ -4,7 +4,7 @@ export const CommentValidation = {
     MaxLength: 1024,
   },
   Rating: {
-    Min: 0,
+    Min: 1,
     Max: 5,
   },
 } as const;
