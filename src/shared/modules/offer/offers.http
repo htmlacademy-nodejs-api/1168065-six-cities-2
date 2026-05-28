@@ -1,19 +1,22 @@
+@token =
+@offerId =
+
 # Получить объявление по идентификатору
-GET http://localhost:3000/offers/6a1475f5e8df7c0412530a85 HTTP/1.1
-Authorization: Bearer {token}
+GET http://localhost:3000/offers/{{offerId}} HTTP/1.1
+# Authorization: Bearer {{token}}
 
 ###
 
 ## Получить список объявлений
 GET http://localhost:3000/offers?limit=10 HTTP/1.1
-# Authorization: Bearer {token}
+# Authorization: Bearer {{token}}
 ###
 
 ## Создать новое объявление
 
 POST http://localhost:3000/offers HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer {token}
+Authorization: Bearer {{token}}
 
 {
   "title": "Modern apartment in city center",
@@ -51,16 +54,16 @@ Authorization: Bearer {token}
 ###
 
 ## Удалить объявление по идентификатору
-DELETE http://localhost:3000/offers/6a13635c0df9cd8bf6105552 HTTP/1.1
-Authorization: Bearer {token}
+DELETE http://localhost:3000/offers/{{offerId}} HTTP/1.1
+Authorization: Bearer {{token}}
 
 ###
 
 ## Обновить объявление
 
-PATCH http://localhost:3000/offers/6a1475f5e8df7c0412530a85 HTTP/1.1
+PATCH http://localhost:3000/offers/{{offerId}} HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer {token}
+Authorization: Bearer {{token}}
 
 {
   "isPremium": true,
@@ -70,7 +73,7 @@ Authorization: Bearer {token}
 ###
 
 ## Список комментариев к объявлению
-GET http://localhost:3000/offers/6a1475f5e8df7c0412530a85/comments HTTP/1.1
+GET http://localhost:3000/offers/{{offerId}}/comments HTTP/1.1
 
 ###
 
@@ -81,21 +84,21 @@ GET http://localhost:3000/offers/premium?city=Brussels HTTP/1.1
 
 ## Добавить в избранное
 
-POST http://localhost:3000/offers/6a1475f5e8df7c0412530a85/favorite HTTP/1.1
-Authorization: Bearer {token}
+POST http://localhost:3000/offers/{{offerId}}/favorite HTTP/1.1
+Authorization: Bearer {{token}}
 
 ###
 
 ## Удалить из избранного
 
 DELETE http://localhost:3000/offers/6a1475f5e8df7c0412530a85/favorite HTTP/1.1
-Authorization: Bearer {token}
+Authorization: Bearer {{token}}
 
 ###
 
 ## Получить избранные объявления
 
 GET http://localhost:3000/offers/favorites HTTP/1.1
-Authorization: Bearer {token}
+Authorization: Bearer {{token}}
 
 ###
