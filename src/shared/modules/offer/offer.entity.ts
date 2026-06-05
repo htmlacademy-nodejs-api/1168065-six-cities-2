@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import {
   defaultClasses,
   getModelForClass,
@@ -22,23 +21,17 @@ export interface OfferEntity extends defaultClasses.Base {}
 export type OfferWithFavorite = OfferEntity & {
   isFavorite: boolean;
 };
-export type OfferPreviewData = Pick<
-  OfferEntity,
-  | 'title'
-  | 'publishDate'
-  | 'city'
-  | 'previewImage'
-  | 'isPremium'
-  | 'rating'
-  | 'commentsCount'
-  | 'type'
-  | 'price'
-> & {
-  _id: Types.ObjectId;
-};
-export type OfferPreview = OfferPreviewData & {
-  isFavorite: boolean;
-};
+export type OfferPreview = Omit<
+  OfferWithFavorite,
+  | 'description'
+  | 'images'
+  | 'facilities'
+  | 'rooms'
+  | 'guests'
+  | 'location'
+  | 'userId'
+>;
+export type OfferPreviewBase = Omit<OfferPreview, 'isFavorite'>;
 
 @modelOptions({
   schemaOptions: {

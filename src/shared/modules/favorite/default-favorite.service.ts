@@ -5,8 +5,8 @@ import { types } from '@typegoose/typegoose';
 import { FavoriteEntity } from './favorite.entity.js';
 import {
   OfferPreview,
-  OfferPreviewData,
   OFFER_PREVIEW_FIELDS,
+  OfferPreviewBase,
 } from '../offer/index.js';
 
 @injectable()
@@ -43,7 +43,7 @@ export class DefaultFavoriteService implements FavoriteService {
       .exec();
 
     return favorites.map((favorite) => ({
-      ...(favorite.offerId as OfferPreviewData),
+      ...(favorite.offerId as OfferPreviewBase),
       isFavorite: true,
     }));
   }

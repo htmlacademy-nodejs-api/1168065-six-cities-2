@@ -7,7 +7,6 @@ import { types } from '@typegoose/typegoose';
 import {
   OfferEntity,
   OfferPreview,
-  OfferPreviewData,
   OfferWithFavorite,
 } from './offer.entity.js';
 import { CreateOfferDTO } from './dto/create-offer.dto.js';
@@ -201,10 +200,10 @@ export class DefaultOfferService implements OfferService {
     return new Set(favoriteIds.map(String));
   }
 
-  private addFavoriteFlag(
-    offers: OfferPreviewData[],
+  private addFavoriteFlag<T extends { _id: Types.ObjectId }>(
+    offers: T[],
     favoriteIds: Set<string>,
-  ): OfferPreview[] {
+  ): (T & { isFavorite: boolean })[] {
     return offers.map((offer) => ({
       ...offer,
       isFavorite: favoriteIds.has(offer._id.toString()),
