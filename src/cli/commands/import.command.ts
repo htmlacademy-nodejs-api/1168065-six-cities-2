@@ -92,25 +92,18 @@ export class ImportCommand implements Command {
     this.databaseClient.disconnect();
   }
 
-  public async execute(
-    filename: string,
-    login: string,
-    password: string,
-    host: string,
-    dbname: string,
-    salt: string,
-  ): Promise<void> {
+  public async execute(filename: string): Promise<void> {
     this.logger.info('Starting import...');
     this.config = new RestConfig(this.logger);
 
     const uri = getMongoURI(
-      login,
-      password,
-      host,
+      this.config.get('DB_USER'),
+      this.config.get('DB_PASSWORD'),
+      this.config.get('DB_HOST'),
       this.config.get('DB_PORT'),
-      dbname,
+      this.config.get('DB_NAME'),
     );
-    this.salt = salt;
+    this.salt = this.config.get('SALT');
 
     await this.databaseClient.connect(uri);
 
