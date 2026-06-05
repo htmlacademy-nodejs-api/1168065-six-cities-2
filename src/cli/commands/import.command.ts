@@ -4,6 +4,7 @@ import {
   createOffer,
   getErrorMessage,
   getMongoURI,
+  ParsedOffer,
 } from '../../shared/helpers/index.js';
 import chalk from 'chalk';
 import {
@@ -12,6 +13,7 @@ import {
   UserService,
 } from '../../shared/modules/user/index.js';
 import {
+  CreateOfferDTO,
   DefaultOfferService,
   OfferModel,
   OfferService,
@@ -21,7 +23,6 @@ import {
   MongoDatabaseClient,
 } from '../../shared/libs/database-client/index.js';
 import { ConsoleLogger, Logger } from '../../shared/libs/logger/index.js';
-import { Offer } from '../../shared/types/index.js';
 import { CommentModel } from '../../shared/modules/comment/index.js';
 import { FavoriteModel } from '../../shared/modules/favorite/index.js';
 import {
@@ -29,6 +30,8 @@ import {
   RestConfig,
   RestSchema,
 } from '../../shared/libs/config/index.js';
+import { plainToInstance } from 'class-transformer';
+import { validateOrReject, ValidationError } from 'class-validator';
 
 export class ImportCommand implements Command {
   private userService: UserService;
@@ -57,13 +60,13 @@ export class ImportCommand implements Command {
     return '--import';
   }
 
-  private async saveOffer(offer: Offer) {
+  private async saveOffer(offer: ParsedOffer) {
     const user = await this.userService.findOrCreate(
       { ...offer.host, password: this.config.get('DEFAULT_USER_PASSWORD') },
       this.salt,
     );
 
-    await this.offerService.create({
+    const dto = plainToInstance(CreateOfferDTO, {
       userId: user.id,
       title: offer.title,
       description: offer.description,
@@ -79,12 +82,35 @@ export class ImportCommand implements Command {
       price: offer.price,
       facilities: offer.facilities,
     });
+
+    await validateOrReject(dto);
+
+    await this.offerService.create(dto);
   }
 
-  private async onImportedLine(line: string, resolve: () => void) {
-    const offer = createOffer(line);
-    await this.saveOffer(offer);
-    resolve();
+  private async onImportedLine(
+    line: string,
+    resolve: (value: boolean) => void,
+  ) {
+    try {
+      const offer = createOffer(line);
+
+      await this.saveOffer(offer);
+
+      resolve(true);
+    } catch (error) {
+      if (Array.isArray(error)) {
+        console.error(chalk.redBright('Validation failed'));
+
+        error.forEach((item: ValidationError) => {
+          Object.values(item.constraints ?? {}).forEach((message) => {
+            console.error(message);
+          });
+        });
+      }
+
+      resolve(false);
+    }
   }
 
   private onCompleteImport(count: number) {
