@@ -4,12 +4,18 @@ import { OfferService } from './offer-service.interface.js';
 import { City, Component, SortType } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { types } from '@typegoose/typegoose';
-import { OfferEntity, OfferWithFavorite } from './offer.entity.js';
+import {
+  OfferEntity,
+  OfferPreview,
+  OfferPreviewData,
+  OfferWithFavorite,
+} from './offer.entity.js';
 import { CreateOfferDTO } from './dto/create-offer.dto.js';
 import { UpdateOfferDTO } from './dto/update-offer.dto.js';
 import {
   DEFAULT_OFFER_COUNT,
   DEFAULT_PREMIUM_OFFER_COUNT,
+  OFFER_PREVIEW_FIELDS,
 } from './offer.constant.js';
 import { CommentEntity } from '../comment/index.js';
 import { Types } from 'mongoose';
@@ -66,16 +72,13 @@ export class DefaultOfferService implements OfferService {
     };
   }
 
-  public async find(
-    count?: number,
-    userId?: string,
-  ): Promise<OfferWithFavorite[]> {
+  public async find(count?: number, userId?: string): Promise<OfferPreview[]> {
     const offers = await this.offerModel
-      .find()
+      .find({}, OFFER_PREVIEW_FIELDS)
       .sort({ publishDate: SortType.Down })
       .limit(count ?? DEFAULT_OFFER_COUNT)
-      .populate(['userId'])
-      .lean();
+      .lean()
+      .exec();
 
     if (!userId) {
       return offers.map((offer) => ({
@@ -162,7 +165,7 @@ export class DefaultOfferService implements OfferService {
     city: City,
     userId?: string,
     count?: number,
-  ): Promise<OfferWithFavorite[]> {
+  ): Promise<OfferPreview[]> {
     if (!Object.values(City).includes(city)) {
       throw new HttpError(
         StatusCodes.BAD_REQUEST,
@@ -172,10 +175,9 @@ export class DefaultOfferService implements OfferService {
     }
 
     const premiumOffers = await this.offerModel
-      .find({ city, isPremium: true })
+      .find({ city, isPremium: true }, OFFER_PREVIEW_FIELDS)
       .sort({ publishDate: SortType.Down })
       .limit(count ?? DEFAULT_PREMIUM_OFFER_COUNT)
-      .populate(['userId'])
       .lean()
       .exec();
 
@@ -200,9 +202,9 @@ export class DefaultOfferService implements OfferService {
   }
 
   private addFavoriteFlag(
-    offers: OfferEntity[],
+    offers: OfferPreviewData[],
     favoriteIds: Set<string>,
-  ): OfferWithFavorite[] {
+  ): OfferPreview[] {
     return offers.map((offer) => ({
       ...offer,
       isFavorite: favoriteIds.has(offer._id.toString()),

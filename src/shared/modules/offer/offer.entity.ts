@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import {
   defaultClasses,
   getModelForClass,
@@ -19,6 +20,23 @@ import { OfferValidation } from './offer.constant.js';
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface OfferEntity extends defaultClasses.Base {}
 export type OfferWithFavorite = OfferEntity & {
+  isFavorite: boolean;
+};
+export type OfferPreviewData = Pick<
+  OfferEntity,
+  | 'title'
+  | 'publishDate'
+  | 'city'
+  | 'previewImage'
+  | 'isPremium'
+  | 'rating'
+  | 'commentsCount'
+  | 'type'
+  | 'price'
+> & {
+  _id: Types.ObjectId;
+};
+export type OfferPreview = OfferPreviewData & {
   isFavorite: boolean;
 };
 
