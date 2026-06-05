@@ -116,48 +116,26 @@ export class DefaultOfferService implements OfferService {
     return (await this.offerModel.exists({ _id: documentId })) !== null;
   }
 
-  public async updateAfterCommentCreated(offerId: string): Promise<void> {
-    await Promise.all([
-      this.incCommentCount(offerId),
-      this.calcRating(offerId),
-    ]);
-  }
-
-  private async incCommentCount(
-    offerId: string,
-  ): Promise<types.DocumentType<OfferEntity> | null> {
-    return this.offerModel
-      .findByIdAndUpdate(offerId, {
-        $inc: {
-          commentsCount: 1,
-        },
-      })
-      .exec();
-  }
-
-  private async calcRating(offerId: string): Promise<void> {
-    const ratings = await this.commentModel.aggregate([
+  public async updateOfferStats(offerId: string): Promise<void> {
+    const stats = await this.commentModel.aggregate([
       { $match: { offerId: new Types.ObjectId(offerId) } },
-      { $group: { _id: '$offerId', avgRating: { $avg: '$rating' } } },
       {
-        $project: {
-          _id: 0,
-          avgRating: { $round: ['$avgRating', 1] },
+        $group: {
+          _id: '$offerId',
+          avgRating: { $avg: '$rating' },
+          commentsCount: { $sum: 1 },
         },
       },
     ]);
 
-    const rating = ratings?.length ? ratings[0]?.avgRating : 0;
+    const rating = stats.length ? Number(stats[0].avgRating.toFixed(1)) : 0;
 
-    await this.offerModel
-      .findByIdAndUpdate(
-        offerId,
-        {
-          rating,
-        },
-        { returnDocument: 'after' },
-      )
-      .exec();
+    const commentsCount = stats.length ? stats[0].commentsCount : 0;
+
+    await this.offerModel.findByIdAndUpdate(offerId, {
+      rating,
+      commentsCount,
+    });
   }
 
   public async findPremiumByCity(

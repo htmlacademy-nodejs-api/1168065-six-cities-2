@@ -27,5 +27,5 @@ export interface OfferService extends DocumentExists {
     count?: number,
   ): Promise<OfferPreview[]>;
   exists(documentId: string): Promise<boolean>;
-  updateAfterCommentCreated(offerId: string): Promise<void>;
+  updateOfferStats(offerId: string): Promise<void>;
 }
