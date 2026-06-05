@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { Command } from './command.interface.js';
 import { TSVFileReader } from '../../shared/libs/file-reader/index.js';
 import {
@@ -107,6 +108,8 @@ export class ImportCommand implements Command {
             console.error(message);
           });
         });
+      } else {
+        console.error(getErrorMessage(error));
       }
 
       resolve(false);
@@ -115,11 +118,25 @@ export class ImportCommand implements Command {
 
   private onCompleteImport(count: number) {
     console.info(chalk.bgBlueBright(`${count} rows imported`));
-    this.databaseClient.disconnect();
   }
 
-  public async execute(filename: string): Promise<void> {
+  public async execute(filename?: string): Promise<void> {
+    if (!filename) {
+      console.error(
+        chalk.redBright(
+          'No file provided. Usage: npm run cli -- --import <path/to/file.tsv>',
+        ),
+      );
+      return;
+    }
+
+    if (path.extname(filename).toLowerCase() !== '.tsv') {
+      console.error(chalk.redBright('Only .tsv files are supported'));
+      return;
+    }
+
     this.logger.info('Starting import...');
+
     this.config = new RestConfig(this.logger);
 
     const uri = getMongoURI(
@@ -129,22 +146,25 @@ export class ImportCommand implements Command {
       this.config.get('DB_PORT'),
       this.config.get('DB_NAME'),
     );
+
     this.salt = this.config.get('SALT');
 
-    await this.databaseClient.connect(uri);
-
-    const fileReader = new TSVFileReader(filename.trim());
-
-    fileReader.on('line', this.onImportedLine);
-    fileReader.on('end', this.onCompleteImport);
-
     try {
+      await this.databaseClient.connect(uri);
+
+      const fileReader = new TSVFileReader(filename.trim());
+
+      fileReader.on('line', this.onImportedLine);
+      fileReader.on('end', this.onCompleteImport);
+
       await fileReader.read();
     } catch (error) {
-      console.error(
-        chalk.redBright(`Failed to import data from file: ${filename}`),
-      );
+      console.error(`Failed to import data from file: ${filename}`);
       console.error(getErrorMessage(error));
+    } finally {
+      if (this.databaseClient.isConnectedToDatabase()) {
+        await this.databaseClient.disconnect();
+      }
     }
   }
 }
