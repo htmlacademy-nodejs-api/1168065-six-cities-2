@@ -8,3 +8,4 @@ export * from './rdo/offer.rdo.js';
 export * from './dto/create-offer.messages.js';
 export * from './rdo/upload-images.rdo.js';
 export * from './rdo/upload-preview.rdo.js';
+export * from './offer.constant.js';

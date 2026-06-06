@@ -6,7 +6,11 @@ import {
   UserType,
 } from '../types/index.js';
 
-export function createOffer(offerData: string): Offer {
+export type ParsedOffer = Omit<Offer, 'publishDate'> & {
+  publishDate: string;
+};
+
+export function createOffer(offerData: string): ParsedOffer {
   const [
     title,
     description,
@@ -31,7 +35,7 @@ export function createOffer(offerData: string): Offer {
   return {
     title,
     description,
-    publishDate: new Date(publishDate),
+    publishDate,
     city: City[city as keyof typeof City],
     previewImage,
     images: images.split(';'),

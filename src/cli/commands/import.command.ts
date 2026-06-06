@@ -1,9 +1,11 @@
+import path from 'node:path';
 import { Command } from './command.interface.js';
 import { TSVFileReader } from '../../shared/libs/file-reader/index.js';
 import {
   createOffer,
   getErrorMessage,
   getMongoURI,
+  ParsedOffer,
 } from '../../shared/helpers/index.js';
 import chalk from 'chalk';
 import {
@@ -12,6 +14,7 @@ import {
   UserService,
 } from '../../shared/modules/user/index.js';
 import {
+  CreateOfferDTO,
   DefaultOfferService,
   OfferModel,
   OfferService,
@@ -21,7 +24,6 @@ import {
   MongoDatabaseClient,
 } from '../../shared/libs/database-client/index.js';
 import { ConsoleLogger, Logger } from '../../shared/libs/logger/index.js';
-import { Offer } from '../../shared/types/index.js';
 import { CommentModel } from '../../shared/modules/comment/index.js';
 import { FavoriteModel } from '../../shared/modules/favorite/index.js';
 import {
@@ -29,6 +31,8 @@ import {
   RestConfig,
   RestSchema,
 } from '../../shared/libs/config/index.js';
+import { plainToInstance } from 'class-transformer';
+import { validateOrReject, ValidationError } from 'class-validator';
 
 export class ImportCommand implements Command {
   private userService: UserService;
@@ -57,13 +61,13 @@ export class ImportCommand implements Command {
     return '--import';
   }
 
-  private async saveOffer(offer: Offer) {
+  private async saveOffer(offer: ParsedOffer) {
     const user = await this.userService.findOrCreate(
       { ...offer.host, password: this.config.get('DEFAULT_USER_PASSWORD') },
       this.salt,
     );
 
-    await this.offerService.create({
+    const dto = plainToInstance(CreateOfferDTO, {
       userId: user.id,
       title: offer.title,
       description: offer.description,
@@ -79,53 +83,88 @@ export class ImportCommand implements Command {
       price: offer.price,
       facilities: offer.facilities,
     });
+
+    await validateOrReject(dto);
+
+    await this.offerService.create(dto);
   }
 
-  private async onImportedLine(line: string, resolve: () => void) {
-    const offer = createOffer(line);
-    await this.saveOffer(offer);
-    resolve();
+  private async onImportedLine(
+    line: string,
+    resolve: (value: boolean) => void,
+  ) {
+    try {
+      const offer = createOffer(line);
+
+      await this.saveOffer(offer);
+
+      resolve(true);
+    } catch (error) {
+      if (Array.isArray(error)) {
+        console.error(chalk.redBright('Validation failed'));
+
+        error.forEach((item: ValidationError) => {
+          Object.values(item.constraints ?? {}).forEach((message) => {
+            console.error(message);
+          });
+        });
+      } else {
+        console.error(getErrorMessage(error));
+      }
+
+      resolve(false);
+    }
   }
 
   private onCompleteImport(count: number) {
     console.info(chalk.bgBlueBright(`${count} rows imported`));
-    this.databaseClient.disconnect();
   }
 
-  public async execute(
-    filename: string,
-    login: string,
-    password: string,
-    host: string,
-    dbname: string,
-    salt: string,
-  ): Promise<void> {
+  public async execute(filename?: string): Promise<void> {
+    if (!filename) {
+      console.error(
+        chalk.redBright(
+          'No file provided. Usage: npm run cli -- --import <path/to/file.tsv>',
+        ),
+      );
+      return;
+    }
+
+    if (path.extname(filename).toLowerCase() !== '.tsv') {
+      console.error(chalk.redBright('Only .tsv files are supported'));
+      return;
+    }
+
     this.logger.info('Starting import...');
+
     this.config = new RestConfig(this.logger);
 
     const uri = getMongoURI(
-      login,
-      password,
-      host,
+      this.config.get('DB_USER'),
+      this.config.get('DB_PASSWORD'),
+      this.config.get('DB_HOST'),
       this.config.get('DB_PORT'),
-      dbname,
+      this.config.get('DB_NAME'),
     );
-    this.salt = salt;
 
-    await this.databaseClient.connect(uri);
-
-    const fileReader = new TSVFileReader(filename.trim());
-
-    fileReader.on('line', this.onImportedLine);
-    fileReader.on('end', this.onCompleteImport);
+    this.salt = this.config.get('SALT');
 
     try {
+      await this.databaseClient.connect(uri);
+
+      const fileReader = new TSVFileReader(filename.trim());
+
+      fileReader.on('line', this.onImportedLine);
+      fileReader.on('end', this.onCompleteImport);
+
       await fileReader.read();
     } catch (error) {
-      console.error(
-        chalk.redBright(`Failed to import data from file: ${filename}`),
-      );
+      console.error(`Failed to import data from file: ${filename}`);
       console.error(getErrorMessage(error));
+    } finally {
+      if (this.databaseClient.isConnectedToDatabase()) {
+        await this.databaseClient.disconnect();
+      }
     }
   }
 }

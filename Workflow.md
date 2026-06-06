@@ -29,7 +29,7 @@ npm install
 ```env
 PORT=3000
 SALT=iamsalt
-HOST=27.0.0.1
+HOST=127.0.0.1
 DB_HOST=localhost
 DB_USER=admin
 DB_PASSWORD=test
@@ -38,6 +38,7 @@ DB_NAME=six-cities-2
 UPLOAD_DIRECTORY=upload
 STATIC_DIRECTORY_PATH=static
 JWT_SECRET=secret
+DEFAULT_USER_PASSWORD=password
 ```
 
 Назначение переменных:
@@ -54,6 +55,17 @@ JWT_SECRET=secret
 ### 3. Запустить MongoDB
 
 Перед стартом приложения убедитесь, что сервер MongoDB запущен и доступен по параметрам из `.env`. Если база не будет доступна, REST API не сможет завершить инициализацию.
+
+Для запуска проекта с использованием Docker выполните в терминале:
+
+```bash
+docker-compose \
+  --file ./docker-compose.yml \
+  --env-file ./.env \
+  --project-name "six-cities" \
+  up \
+  -d
+```
 
 ### 4. Собрать проект
 

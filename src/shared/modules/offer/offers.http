@@ -3,7 +3,7 @@
 
 # Получить объявление по идентификатору
 GET http://localhost:3000/offers/{{offerId}} HTTP/1.1
-# Authorization: Bearer {{token}}
+Authorization: Bearer {{token}}
 
 ###
 
@@ -91,7 +91,7 @@ Authorization: Bearer {{token}}
 
 ## Удалить из избранного
 
-DELETE http://localhost:3000/offers/6a1475f5e8df7c0412530a85/favorite HTTP/1.1
+DELETE http://localhost:3000/offers/{{offerId}}/favorite HTTP/1.1
 Authorization: Bearer {{token}}
 
 ###

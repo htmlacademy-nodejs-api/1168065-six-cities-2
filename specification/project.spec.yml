@@ -131,7 +131,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Offer'
+                  $ref: '#/components/schemas/OfferPreview'
 
     post:
       tags: [offers]
@@ -254,7 +254,7 @@ paths:
                 type: array
                 maxItems: 3
                 items:
-                  $ref: '#/components/schemas/Offer'
+                  $ref: '#/components/schemas/OfferPreview'
         '400':
           description: Неверно выбран город
 
@@ -273,7 +273,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Offer'
+                  $ref: '#/components/schemas/OfferPreview'
         '401':
           $ref: '#/components/responses/Unauthorized'
 
@@ -631,3 +631,42 @@ components:
             type: string
         location:
           $ref: '#/components/schemas/Coordinates'
+    OfferPreview:
+      type: object
+      required:
+        - id
+        - title
+        - publishDate
+        - city
+        - previewImage
+        - isPremium
+        - isFavorite
+        - type
+        - price
+        - commentsCount
+        - rating
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        publishDate:
+          type: string
+          format: date-time
+        city:
+          $ref: '#/components/schemas/City'
+        previewImage:
+          type: string
+        isPremium:
+          type: boolean
+        isFavorite:
+          type: boolean
+        type:
+          $ref: '#/components/schemas/Housing'
+        price:
+          type: integer
+        commentsCount:
+          type: integer
+        rating:
+          type: number
+          format: float
