@@ -36,7 +36,7 @@ export class GenerateCommand implements Command {
     if (!count || !filepath || !url) {
       console.error(
         chalk.redBright(
-          'Usage: npm run cli -- --generate <count> <filepath> <url>',
+          'Invalid arguments. Usage: npm run cli -- --generate <count> <filepath> <url>',
         ),
       );
 
