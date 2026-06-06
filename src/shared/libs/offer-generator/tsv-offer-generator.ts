@@ -35,6 +35,8 @@ const OfferGenerationRange = {
   },
 } as const;
 
+const IMAGES_LENGTH = 6;
+
 export class TSVOfferGenerator implements OfferGenerator {
   constructor(private readonly mockData: MockServerData) {}
 
@@ -52,7 +54,10 @@ export class TSVOfferGenerator implements OfferGenerator {
       .toISOString();
     const city = getRandomItem<string>(this.mockData.cities);
     const previewImage = getRandomItem<string>(this.mockData.previewImages);
-    const images = getRandomItems<string>(this.mockData.offerImages).join(';');
+    const images = getRandomItems<string>(
+      this.mockData.offerImages,
+      IMAGES_LENGTH,
+    ).join(';');
     const isPremium = generateRandomBoolean();
     const type = getRandomItem(this.mockData.housingTypes);
     const rooms = generateRandomValue(

@@ -31,9 +31,9 @@ export class DefaultCommentService implements CommentService {
       );
     }
 
-    await this.offerService.updateAfterCommentCreated(offerId);
-
     const comment = await this.commentModel.create(dto);
+    await this.offerService.updateOfferStats(offerId);
+
     return comment.populate('userId');
   }
 

@@ -35,6 +35,7 @@ import {
 } from './offer.constant.js';
 import { UploadImagesRdo } from './rdo/upload-images.rdo.js';
 import { UploadPreviewRdo } from './rdo/upload-preview.rdo.js';
+import { OfferPreviewRdo } from './rdo/offer-preview.rdo.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -86,7 +87,7 @@ export class OfferController extends BaseController {
     const userId = tokenPayload?.id;
     const offers = await this.offerService.find(query?.limit, userId);
 
-    this.ok(res, fillDTO(OfferRdo, offers));
+    this.ok(res, fillDTO(OfferPreviewRdo, offers));
   }
 
   public async delete(
@@ -161,7 +162,7 @@ export class OfferController extends BaseController {
       userId,
       DEFAULT_PREMIUM_OFFER_COUNT,
     );
-    this.ok(res, fillDTO(OfferRdo, premiumOffersByCity));
+    this.ok(res, fillDTO(OfferPreviewRdo, premiumOffersByCity));
   }
 
   public async addFavorite(
@@ -192,7 +193,7 @@ export class OfferController extends BaseController {
   ): Promise<void> {
     const offers = await this.favoriteService.getOffers(tokenPayload.id);
 
-    this.ok(res, fillDTO(OfferRdo, offers));
+    this.ok(res, fillDTO(OfferPreviewRdo, offers));
   }
 
   public async uploadPreview(

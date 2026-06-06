@@ -3,7 +3,11 @@ import { FavoriteService } from './favorite-service.interface.js';
 import { Component } from '../../types/index.js';
 import { types } from '@typegoose/typegoose';
 import { FavoriteEntity } from './favorite.entity.js';
-import { OfferEntity, OfferWithFavorite } from '../offer/index.js';
+import {
+  OfferPreview,
+  OFFER_PREVIEW_FIELDS,
+  OfferPreviewBase,
+} from '../offer/index.js';
 
 @injectable()
 export class DefaultFavoriteService implements FavoriteService {
@@ -28,17 +32,18 @@ export class DefaultFavoriteService implements FavoriteService {
     await this.favoriteModel.deleteMany({ offerId }).exec();
   }
 
-  public async getOffers(userId: string): Promise<OfferWithFavorite[]> {
+  public async getOffers(userId: string): Promise<OfferPreview[]> {
     const favorites = await this.favoriteModel
       .find({ userId })
       .populate({
         path: 'offerId',
-        populate: { path: 'userId' },
+        select: OFFER_PREVIEW_FIELDS,
       })
-      .lean();
+      .lean()
+      .exec();
 
     return favorites.map((favorite) => ({
-      ...(favorite.offerId as OfferEntity),
+      ...(favorite.offerId as OfferPreviewBase),
       isFavorite: true,
     }));
   }

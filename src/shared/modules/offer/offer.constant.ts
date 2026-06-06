@@ -38,3 +38,15 @@ export const OfferValidation = {
     },
   },
 } as const;
+
+export const OFFER_PREVIEW_FIELDS = {
+  title: 1,
+  type: 1,
+  price: 1,
+  previewImage: 1,
+  city: 1,
+  publishDate: 1,
+  isPremium: 1,
+  rating: 1,
+  commentsCount: 1,
+};

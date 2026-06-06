@@ -4,12 +4,17 @@ import { OfferService } from './offer-service.interface.js';
 import { City, Component, SortType } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { types } from '@typegoose/typegoose';
-import { OfferEntity, OfferWithFavorite } from './offer.entity.js';
+import {
+  OfferEntity,
+  OfferPreview,
+  OfferWithFavorite,
+} from './offer.entity.js';
 import { CreateOfferDTO } from './dto/create-offer.dto.js';
 import { UpdateOfferDTO } from './dto/update-offer.dto.js';
 import {
   DEFAULT_OFFER_COUNT,
   DEFAULT_PREMIUM_OFFER_COUNT,
+  OFFER_PREVIEW_FIELDS,
 } from './offer.constant.js';
 import { CommentEntity } from '../comment/index.js';
 import { Types } from 'mongoose';
@@ -66,16 +71,13 @@ export class DefaultOfferService implements OfferService {
     };
   }
 
-  public async find(
-    count?: number,
-    userId?: string,
-  ): Promise<OfferWithFavorite[]> {
+  public async find(count?: number, userId?: string): Promise<OfferPreview[]> {
     const offers = await this.offerModel
-      .find()
+      .find({}, OFFER_PREVIEW_FIELDS)
       .sort({ publishDate: SortType.Down })
       .limit(count ?? DEFAULT_OFFER_COUNT)
-      .populate(['userId'])
-      .lean();
+      .lean()
+      .exec();
 
     if (!userId) {
       return offers.map((offer) => ({
@@ -114,55 +116,33 @@ export class DefaultOfferService implements OfferService {
     return (await this.offerModel.exists({ _id: documentId })) !== null;
   }
 
-  public async updateAfterCommentCreated(offerId: string): Promise<void> {
-    await Promise.all([
-      this.incCommentCount(offerId),
-      this.calcRating(offerId),
-    ]);
-  }
-
-  private async incCommentCount(
-    offerId: string,
-  ): Promise<types.DocumentType<OfferEntity> | null> {
-    return this.offerModel
-      .findByIdAndUpdate(offerId, {
-        $inc: {
-          commentsCount: 1,
-        },
-      })
-      .exec();
-  }
-
-  private async calcRating(offerId: string): Promise<void> {
-    const ratings = await this.commentModel.aggregate([
+  public async updateOfferStats(offerId: string): Promise<void> {
+    const stats = await this.commentModel.aggregate([
       { $match: { offerId: new Types.ObjectId(offerId) } },
-      { $group: { _id: '$offerId', avgRating: { $avg: '$rating' } } },
       {
-        $project: {
-          _id: 0,
-          avgRating: { $round: ['$avgRating', 1] },
+        $group: {
+          _id: '$offerId',
+          avgRating: { $avg: '$rating' },
+          commentsCount: { $sum: 1 },
         },
       },
     ]);
 
-    const rating = ratings?.length ? ratings[0]?.avgRating : 0;
+    const rating = stats.length ? Number(stats[0].avgRating.toFixed(1)) : 0;
 
-    await this.offerModel
-      .findByIdAndUpdate(
-        offerId,
-        {
-          rating,
-        },
-        { returnDocument: 'after' },
-      )
-      .exec();
+    const commentsCount = stats.length ? stats[0].commentsCount : 0;
+
+    await this.offerModel.findByIdAndUpdate(offerId, {
+      rating,
+      commentsCount,
+    });
   }
 
   public async findPremiumByCity(
     city: City,
     userId?: string,
     count?: number,
-  ): Promise<OfferWithFavorite[]> {
+  ): Promise<OfferPreview[]> {
     if (!Object.values(City).includes(city)) {
       throw new HttpError(
         StatusCodes.BAD_REQUEST,
@@ -172,10 +152,9 @@ export class DefaultOfferService implements OfferService {
     }
 
     const premiumOffers = await this.offerModel
-      .find({ city, isPremium: true })
+      .find({ city, isPremium: true }, OFFER_PREVIEW_FIELDS)
       .sort({ publishDate: SortType.Down })
       .limit(count ?? DEFAULT_PREMIUM_OFFER_COUNT)
-      .populate(['userId'])
       .lean()
       .exec();
 
@@ -199,10 +178,10 @@ export class DefaultOfferService implements OfferService {
     return new Set(favoriteIds.map(String));
   }
 
-  private addFavoriteFlag(
-    offers: OfferEntity[],
+  private addFavoriteFlag<T extends { _id: Types.ObjectId }>(
+    offers: T[],
     favoriteIds: Set<string>,
-  ): OfferWithFavorite[] {
+  ): (T & { isFavorite: boolean })[] {
     return offers.map((offer) => ({
       ...offer,
       isFavorite: favoriteIds.has(offer._id.toString()),
