@@ -32,7 +32,28 @@ export class GenerateCommand implements Command {
 
   public async execute(...args: string[]): Promise<void> {
     const [count, filepath, url] = args;
+
+    if (!count || !filepath || !url) {
+      console.error(
+        chalk.redBright(
+          'Usage: npm run cli -- --generate <count> <filepath> <url>',
+        ),
+      );
+
+      return;
+    }
+
     const offerCount = Number.parseInt(count, 10);
+
+    if (Number.isNaN(offerCount) || offerCount <= 0) {
+      console.error(chalk.redBright('Count must be a positive integer'));
+      return;
+    }
+
+    if (!filepath.endsWith('.tsv')) {
+      console.error(chalk.redBright('Output file must have .tsv extension'));
+      return;
+    }
 
     try {
       await this.load(url);
